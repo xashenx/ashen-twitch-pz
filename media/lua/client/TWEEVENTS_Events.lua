@@ -43,7 +43,7 @@ function performEvent(EventsTable, initiator)
 		if EventsTable["zombies"] == true and EventsTable["zedquant"] > 0 and initiator == playerChar:getUsername() then
 			print("------------=Twitch Events: zombies=------------")
 			if TWEAnnouceEvents == true then
-				playerChar:Say(EventsTable["Viewer"] .. " sent " ..EventsTable["zedquant"] .. " zombies")
+				playerChar:Say(EventsTable["Viewer"] .. getText("UI_ZombieSpawn") .. EventsTable["zedquant"] .. " zombies")
 			end
 
 			--local Zedx, Zedy, wz = LSpawnLoc();
@@ -69,7 +69,7 @@ function performEvent(EventsTable, initiator)
 			if tonumber(EventsTable["helicopter"]) == 1 then
 				print("------------=Twitch Events: Air Event=------------")
 				if TWEAnnouceEvents == true then
-					playerChar:Say(EventsTable["Viewer"] .. " called a Military Heli")
+					playerChar:Say(EventsTable["Viewer"] .. getText("UI_AirEventMilitary"))
 				end
 				if isClient() then
 					ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "military" }
@@ -85,7 +85,7 @@ function performEvent(EventsTable, initiator)
 			if tonumber(EventsTable["helicopter"]) == 2 then
 				print("------------=Twitch Events: Air Event=------------")
 				if TWEAnnouceEvents == true then
-					playerChar:Say(EventsTable["Viewer"] .. " called a News Heli")
+					playerChar:Say(EventsTable["Viewer"] .. getText("UI_AirEventNews"))
 				end
 				if isClient() then
 					ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "news_chopper" }
@@ -100,7 +100,7 @@ function performEvent(EventsTable, initiator)
 			if tonumber(EventsTable["helicopter"]) == 3 then
 				print("------------=Twitch Events: Air Event=------------")
 				if TWEAnnouceEvents == true then
-					playerChar:Say(EventsTable["Viewer"] .. " called a Police Heli")
+					playerChar:Say(EventsTable["Viewer"] .. getText("UI_AirEventPolice"))
 				end
 				if isClient() then
 					ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "police" }
@@ -115,7 +115,7 @@ function performEvent(EventsTable, initiator)
 			if tonumber(EventsTable["helicopter"]) == 4 then
 				print("------------=Twitch Events: Air Event=------------")
 				if TWEAnnouceEvents == true then
-					playerChar:Say(EventsTable["Viewer"] .. " called a Raiders Heli")
+					playerChar:Say(EventsTable["Viewer"] .. getText("UI_AirEventRaiders"))
 				end
 				if isClient() then
 					ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "raiders" }
@@ -130,7 +130,7 @@ function performEvent(EventsTable, initiator)
 			if tonumber(EventsTable["helicopter"]) == 5 then
 				print("------------=Twitch Events: Air Event=------------")
 				if TWEAnnouceEvents == true then
-					playerChar:Say(EventsTable["Viewer"] .. " called a FEMA drop")
+					playerChar:Say(EventsTable["Viewer"] .. getText("UI_AirEventFema"))
 				end
 				if isClient() then
 					ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "FEMA_drop" }
@@ -145,7 +145,7 @@ function performEvent(EventsTable, initiator)
 			if tonumber(EventsTable["helicopter"]) == 6 then
 				print("------------=Twitch Events: Air Event=------------")
 				if TWEAnnouceEvents == true then
-					playerChar:Say(EventsTable["Viewer"] .. " called a jet")
+					playerChar:Say(EventsTable["Viewer"] .. getText("UI_AirEventJet"))
 				end
 				if isClient() then
 					ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "jet" }
@@ -160,7 +160,7 @@ function performEvent(EventsTable, initiator)
 			if tonumber(EventsTable["helicopter"]) == 7 then
 				print("------------=Twitch Events: Air Event=------------")
 				if TWEAnnouceEvents == true then
-					playerChar:Say(EventsTable["Viewer"] .. " called a random air event")
+					playerChar:Say(EventsTable["Viewer"] .. getText("UI_AirEventRandom"))
 				end
 				if isClient() then
 					ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "RANDOM" }
@@ -187,21 +187,23 @@ function performEvent(EventsTable, initiator)
 			
 		end
 
-		if EventsTable["gas"] == "true" then --car events begin
-			TWE_Events.TWECars("GasTank")
+		local part_modifier = tonumber(EventsTable["part_modifier"])
+		if EventsTable["gas"] then --car events begin
+			TWE_Events.TWECars(EventsTable["Viewer"], "GasTank", part_modifier)
 		end
-		if EventsTable["tire"] == "true" then
-			TWE_Events.TWECars("FlatTire")
+		if EventsTable["tire"] then
+			TWE_Events.TWECars(EventsTable["Viewer"], "FlatTire", part_modifier)
 		end
-		if EventsTable["muffler"] == "true" then
-			TWE_Events.TWECars("Muffler")
+		if EventsTable["muffler"] then
+			TWE_Events.TWECars(EventsTable["Viewer"], "Muffler", part_modifier)
 		end
-		if EventsTable["battery"] == "true" then
-			TWE_Events.TWECars("Battery")
+		if EventsTable["battery"] then
+			TWE_Events.TWECars(EventsTable["Viewer"], "Battery", part_modifier)
 		end
-		if EventsTable["engine"] == "true" then -- car events end
-			TWE_Events.TWECars("Engine")
+		if EventsTable["engine"] then -- car events end
+			TWE_Events.TWECars(EventsTable["Viewer"], "Engine", part_modifier)
 		end
+
 		if tonumber(EventsTable["trait"]) > 0 then -- traits begin
 			print("------------=Twitch Events: trait Event=------------")
 			TWETableTraitsTrigger(tonumber(EventsTable["trait"]))
@@ -257,7 +259,7 @@ function TWE_TraitCheck()
 
 end
 --car event actions
-function TWE_Events.TWECars(Mypart)
+function TWE_Events.TWECars(Viewer, Mypart, modifier)
     local playerChar = getPlayer()
 	local mycar = playerChar:getVehicle()
     local TireSet = { "TireRearRight", "TireRearLeft"," TireFrontRight", "TireFrontLeft"}
@@ -269,41 +271,65 @@ function TWE_Events.TWECars(Mypart)
             local item = part:getId()
             if item ~=  nil then
                 if Mypart == "Engine" and item == Mypart then
-                    playerChar:Say("No no no... don't die on me now!!")
-					part:setCondition(0)
+					local condition = part:getCondition()
+					if modifier > 0 then
+                    	playerChar:Say(Viewer .. getText("UI_engineBonus") .. " " .. modifier)
+					else
+                    	playerChar:Say(Viewer .. getText("UI_engineMalus") .. " " .. modifier)
+					end
+					part:setCondition(condition + modifier)
                 end
                 if Mypart == "FlatTire" then
                     if TireSet[WhichTire] == item then
                         VehicleUtils.RemoveTire(part, true)
                     end
-                    end
-                end
-                if Mypart == "GasTank" and item == Mypart then
-                part:setContainerContentAmount(0)
-                end
-                if Mypart == "Muffler" and item == Mypart then
-                part:setCondition(0)
-                end
-                if Mypart == "Battery" and item == Mypart then
-                part:setCondition(0)
-                end
-            end
-        end
+				end
+				if Mypart == "GasTank" and item == Mypart then
+					local content = part:getContainerContentAmount()
+					if modifier > 0 then
+                    	playerChar:Say(Viewer .. getText("UI_gasBonus") .. " " .. modifier)
+					else
+                    	playerChar:Say(Viewer .. getText("UI_gasMalus") .. " " .. modifier)
+					end
+					part:setContainerContentAmount(content + modifier)
+				end
+				if Mypart == "Muffler" and item == Mypart then
+					local condition = part:getCondition()
+					if modifier > 0 then
+                    	playerChar:Say(Viewer .. getText("UI_mufflerBonus") .. " " .. modifier)
+					else
+                    	playerChar:Say(Viewer .. getText("UI_mufflerMalus") .. " " .. modifier)
+					end
+					part:setCondition(condition + modifier)
+				end
+				if Mypart == "Battery" and item == Mypart then
+					local condition = part:getCondition()
+					if modifier > 0 then
+                    	playerChar:Say(Viewer .. getText("UI_batteryBonus") .. " " .. modifier)
+					else
+                    	playerChar:Say(Viewer .. getText("UI_batteryMalus") .. " " .. modifier)
+					end
+					part:setCondition(condition + modifier)
+				end
+			end
+		end
+	end
 end
+
 --gifts event actions
 function TWE_Events.GiftItems(whatkind)
-local player = getSpecificPlayer(0)
-local inv = player:getInventory()
-local Helpmeitem = 0
-local Trollmeitem = 0
+	local player = getSpecificPlayer(0)
+	local inv = player:getInventory()
+	local Helpmeitem = 0
+	local Trollmeitem = 0
 	if whatkind == 1 then
 		Helpmeitem = ZombRand(1,14)
 		inv:AddItem(HelpTheStreamer[Helpmeitem])
-		player:Say("Thank you for the " .. getItemNameFromFullType(HelpTheStreamer[Helpmeitem]) .. " " .. ViewerName)
+		player:Say(getText("UI_HelpMEEvent") .. getItemNameFromFullType(HelpTheStreamer[Helpmeitem]) .. " " .. ViewerName)
 	elseif whatkind == 2 then
 		Trollmeitem = ZombRand(1,5)
 		inv:AddItem(TrollTheStreamer[Trollmeitem])
-		player:Say("Uau... a " .. getItemNameFromFullType(TrollTheStreamer[Trollmeitem]).. " " .. ViewerName .. " really?!")
+		player:Say(getText("UI_HelpMEEvent") .. getItemNameFromFullType(TrollTheStreamer[Trollmeitem]).. " " .. ViewerName .. getText("UI_HelpMEETroll"))
 	elseif whatkind == 3 then
 		Trollmeitem = ZombRand(1,5)
 		inv:AddItem(TrollTheStreamer[Trollmeitem])
@@ -313,7 +339,7 @@ local Trollmeitem = 0
 		Bgift = TrollTheStreamer[Trollmeitem]
 		player:Say("So a " .. getItemNameFromFullType(HelpTheStreamer[Helpmeitem]) .. " with a " .. getItemNameFromFullType(TrollTheStreamer[Trollmeitem]) .. "! You have strange tastes " .. ViewerName .."!")
 	elseif whatkind == 4 then
-		inv:AddItem(LocalEventsTable["title"])	
+		inv:AddItem(LocalEventsTable["title"])
 		end
 end
 
