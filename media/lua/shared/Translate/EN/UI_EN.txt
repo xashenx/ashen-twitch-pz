@@ -1,4 +1,6 @@
 UI_EN = {
+    UI_Options_acceptEvents = "Accept Events",
+    UI_Options_acceptEvents_tooltip = "Events from the Twitch chat will be accepted",
     UI_optionscreen_binding_Twitch Events = "Twitch Events Integration",
     UI_optionscreen_binding_ModTwitchEventsToggle = "Toggle Twitch Integration",
     UI_optionscreen_binding_ZombieA = "Spawn Zombies key 1",

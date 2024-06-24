@@ -4,12 +4,12 @@ local myevents = require("TWEEVENTS_Events")
 local MyEventsTable = {}
 
 function getreward()
-    local ReadReward = getFileReader("rewards.txt",true)
+    local ReadReward = getFileReader("arewards.txt",true)
     json_string = ReadReward:readLine()
     ReadReward:close()
     if json_string ~= nil then
       MyEventsTable = json:decode(json_string)	
-      local EmptyRewardFile = getFileWriter("rewards.txt", false, false)
+      local EmptyRewardFile = getFileWriter("arewards.txt", false, false)
       EmptyRewardFile:write("")
       EmptyRewardFile:close()
       performHandshake(MyEventsTable)

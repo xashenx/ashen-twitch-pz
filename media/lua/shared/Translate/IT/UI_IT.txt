@@ -1,4 +1,6 @@
 UI_EN = {
+    UI_Options_acceptEvents = "Acceta gli Eventi",
+    UI_Options_acceptEvents_tooltip = "Gli eventi dalla chat di Twitch verranno accettati",
     UI_optionscreen_binding_Twitch Events = "Twitch Events Integration",
     UI_optionscreen_binding_ModTwitchEventsToggle = "Toggle Twitch Integration",
     UI_optionscreen_binding_ZombieA = "Spawn Zombies key 1",
@@ -20,7 +22,7 @@ UI_EN = {
     UI_optionscreen_binding_HeliEventCO = "Heli Type key 3",
     UI_optionscreen_binding_HeliEventDO = "Heli Type key 4",
     UI_TwitchIntegration_status = "Turn on Integration",
-    UI_TwitchIntegration_AIRRAID = "Someone called in a ",
+    UI_TwitchIntegration_AIRRAID = " called in a ",
     UI_TwitchIntegration_ZombieSpawn = " sent ",
     UI_TwitchIntegration_HelpMEEvent = " sent me a ",
     UI_optionscreen_binding_HelpMEEvent = "Help the Streamer Key ",
@@ -28,5 +30,4 @@ UI_EN = {
     UI_TwitchIntegration_TrollMEEvent = " sent me a ",
     UI_optionscreen_binding_StormEvent = "Change Weather Key",
     UI_TwitchIntegration_StormEvent = "My old wound is acting up, the weather must be changing!", 
-
 }

@@ -5,6 +5,8 @@ if not isServer() then return end
 AshenTwitchEvents = AshenTwitchEvents or {}
 AshenTwitchEvents.sandboxSettings = {}
 AshenTwitchEvents.server = {}
+AshenTwitchEvents.server.EventList = {}
+AshenTwitchEvents.server.JoinList = {}
 require "ExpandedHelicopter02a_Presets"
 require "ExpandedHelicopter09_EasyConfigOptions"
 
@@ -13,7 +15,6 @@ Commands.TWEEvents = {};
 Commands.TWEEvents.Dfrag = function(source, args)
 print("Triggered Dfrag command on server")
 end
-
 
 Commands.TWEEvents.Zedspawn = function(source, args)
     local sourceId = source:getOnlineID();
@@ -36,26 +37,33 @@ end
 
 Commands.TWEEvents.Handshake = function(source, args)
     local sourceId = source:getOnlineID();
-	-- get name of source
---	onAirCommand("twitch-events","scheduleEvent",sourceID,args.Event)
-	print("--TWEEVENT- Handshake username-- " .. args.username)
-	print("--TWEEVENT- Handshake ID-- " .. sourceId)
 
-	-- check if user is allowed to use commands
-	local allowed = false
-	for i=1,#AshenTwitchEvents.sandboxSettings.allowedUsers do
-		if AshenTwitchEvents.sandboxSettings.allowedUsers[i] == args.username then
-			allowed = true
+	if args.state == "Request" then
+		-- check if user is allowed to use commands
+		local allowed = false
+		for i=1,#AshenTwitchEvents.sandboxSettings.allowedUsers do
+			if AshenTwitchEvents.sandboxSettings.allowedUsers[i] == args.initiator then
+				allowed = true
+			end
 		end
-	end
-	print("--TWEEVENT- Handshake allowed-- " .. tostring(allowed))
-	
-	if allowed then
-		-- send back a handshake
-		local result = {}
-		result["username"] = args.username
-		result["EventsTable"] = args.EventsTable
-		sendServerCommand("AshenTwitchEvents", "HandshakeResult", result)
+		-- print("--TWEEVENT- Handshake REQUEST -- " .. tostring(allowed) .. " for " .. args.initiator)
+		args.initiatorID = sourceId
+		
+		if allowed then
+			-- insert args.EventsTable in EventList
+			AshenTwitchEvents.server.EventList[args.initiator] = args.EventsTable
+			-- send back a handshake
+			args.state = "Accepted"
+			sendServerCommand("AshenTwitchEvents", "Handshake", args)
+		end
+	-- elseif args.state == "Join" then
+	-- 	print("--TWEEVENT- Handshake JOIN -- " .. source:getUsername())
+	-- 	AshenTwitchEvents.server.JoinList[source:getUsername()] = 1
+	-- 	if AshenTwitchEvents.server.EventList[source:getUsername()] then
+	-- 		-- send back a handshake
+	-- 		args.state = "Accepted"
+	-- 		sendServerCommand("AshenTwitchEvents", "Handshake", args)
+	-- 	end
 	end
 end
 
