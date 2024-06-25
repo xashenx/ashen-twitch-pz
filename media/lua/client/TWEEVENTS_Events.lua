@@ -16,7 +16,7 @@ local HelpTheStreamer ={ "Base.BaseballBat", "Base.HuntingKnife", "Base.Axe", "B
 ----negative items table
 local TrollTheStreamer = { "Base.Generator", "Base.LogStacks4", "Base.Dirtbag", "Base.Sandbag" }
 -----Air Events Presets
-local TWE_Airevents = {"military","police","news_chopper","raiders","FEMA_drop","jet","survivor_heli"}
+local TWE_Airevents = {"military","police","news_chopper_hover","raiders","FEMA_drop","jet","survivor_heli","military_attackhelicopter_zombies","samaritan_drop"}
 -----Temporary traits table
 local TWETraitsTable = {[1]="Deaf",[2]="Thinskinned",[3]="AllThumbs",[4]="Cowardly",[5]="Hemophobic",[6]="SundayDriver",[7]="Graceful",[8]="KeenHearing",[9]="ThickSkinned",[10]="SpeedDemon",[11]="Jogger",[12]="Inconspicuous"}
 local TWETempTraitsTable = {}
@@ -100,10 +100,10 @@ function performEvent(EventsTable, initiator)
 
 				if initiator == playerChar:getUsername() then
 					if isClient() then
-						ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "news_chopper" }
+						ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "news_chopper_hover" }
 						sendClientCommand("TWEEvents", "AirEvent", ServerEvent); -- Trigger Event from Client to Server
 					else
-						local heli = getFreeHelicopter("military")
+						local heli = getFreeHelicopter("news_chopper_hover")
 						heli:launch(playerChar, false)
 					end
 				end
@@ -181,8 +181,58 @@ function performEvent(EventsTable, initiator)
 				end
 			end
 
-
 			if tonumber(EventsTable["helicopter"]) == 7 then
+				print("------------=Twitch Events: Air Event=------------")
+				if TWEAnnouceEvents == true then
+					playerChar:Say(EventsTable["Viewer"] .. getText("UI_AirEventMilitaryFriendly"))
+				end
+
+				if initiator == playerChar:getUsername() then
+					if isClient() then
+						ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "military_attackhelicopter_zombies" }
+						sendClientCommand("TWEEvents", "AirEvent", ServerEvent); -- Trigger Event from Client to Server
+					else
+						local heli = getFreeHelicopter("military_attackhelicopter_zombies")
+						heli:launch(playerChar, false)
+					end
+				end
+			end
+
+			if tonumber(EventsTable["helicopter"]) == 8 then
+				print("------------=Twitch Events: Air Event=------------")
+				if TWEAnnouceEvents == true then
+					playerChar:Say(EventsTable["Viewer"] .. getText("UI_AirEventSurvivor"))
+				end
+
+				if initiator == playerChar:getUsername() then
+					if isClient() then
+						ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "survivor_heli" }
+						sendClientCommand("TWEEvents", "AirEvent", ServerEvent); -- Trigger Event from Client to Server
+					else
+						local heli = getFreeHelicopter("survivor_heli")
+						heli:launch(playerChar, false)
+					end
+				end
+			end
+
+			if tonumber(EventsTable["helicopter"]) == 8 then
+				print("------------=Twitch Events: Air Event=------------")
+				if TWEAnnouceEvents == true then
+					playerChar:Say(EventsTable["Viewer"] .. getText("UI_AirEventSamaritan"))
+				end
+
+				if initiator == playerChar:getUsername() then
+					if isClient() then
+						ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "samaritan_drop" }
+						sendClientCommand("TWEEvents", "AirEvent", ServerEvent); -- Trigger Event from Client to Server
+					else
+						local heli = getFreeHelicopter("samaritan_drop")
+						heli:launch(playerChar, false)
+					end
+				end
+			end
+
+			if tonumber(EventsTable["helicopter"]) == 100 then
 				print("------------=Twitch Events: Air Event=------------")
 				if TWEAnnouceEvents == true then
 					playerChar:Say(EventsTable["Viewer"] .. getText("UI_AirEventRandom"))

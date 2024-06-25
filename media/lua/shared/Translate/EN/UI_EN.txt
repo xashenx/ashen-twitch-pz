@@ -13,10 +13,13 @@ UI_EN = {
     UI_HelpMEEvent = " sent me a ",
     UI_HelpMEETroll = ", really?!",
     UI_AirEventMilitary = " called a Military Heli",
+    UI_AirEventMilitaryFriendly = " called a Friendly Military Heli",
     UI_AirEventNews = " called a News Heli",
     UI_AirEventPolice = " called a Police Heli",
     UI_AirEventRaiders = " called a Raiders Heli",
     UI_AirEventFema = " called a FEMA drop",
     UI_AirEventJet = " called a jet",
+    UI_AirEventSurvivor = " called a survivor Heli",
+    UI_AirEventSamaritan = " called a Samaritan Drop",
     UI_AirEventRandom = " called a random air event",
 }
