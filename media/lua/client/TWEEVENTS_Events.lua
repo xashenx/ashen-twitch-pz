@@ -30,8 +30,9 @@ function performHandshake(EventsTable)
     local playerChar = getPlayer()
 	-- LocalEventsTable = EventsTable
 	-- print(playerChar:getUsername())
-	ServerEvent = {["Etype"] = "Handshake", ["ZedX"] = Zedx, ["ZedY"] = Zedy, ["ZedQ"] = zedquant, ["target"] = playerchar, ["initiator"] = playerChar:getUsername(), ["EventsTable"] = EventsTable}
+	ServerEvent = {["Etype"] = "Handshake", ["ZedX"] = Zedx, ["ZedY"] = Zedy, ["ZedQ"] = zedquant, ["target"] = playerchar, ["EventsTable"] = EventsTable}
 	ServerEvent.state = "Request"
+	ServerEvent.initiator = playerChar:getUsername()
 	--playerChar:Say("x:" .. tostring(ServerEvent.ZedX) .. "y: " .. tostring(ServerEvent.ZedY))
 	sendClientCommand("TWEEvents", "Handshake", ServerEvent); -- Trigger Event from Client to Server
 end
@@ -40,22 +41,28 @@ function performEvent(EventsTable, initiator)
 	local playerChar = getPlayer()
 	if EventsTable then
 		ViewerName = EventsTable["Viewer"]
-		if EventsTable["zombies"] == true and EventsTable["zedquant"] > 0 and initiator == playerChar:getUsername() then
+		if EventsTable["zombies"] == true and EventsTable["zedquant"] > 0 then
 			print("------------=Twitch Events: zombies=------------")
 			if TWEAnnouceEvents == true then
-				playerChar:Say(EventsTable["Viewer"] .. getText("UI_ZombieSpawn") .. EventsTable["zedquant"] .. " zombies")
+				if initiator == playerChar:getUsername() then
+					playerChar:Say(EventsTable["Viewer"] .. getText("UI_ZombieSpawn") .. EventsTable["zedquant"] .. " zombies")
+				else
+					playerChar:Say(EventsTable["Viewer"] .. getText("UI_ZombieSpawn") .. EventsTable["zedquant"] .. " zombies")
+				end
 			end
 
-			--local Zedx, Zedy, wz = LSpawnLoc();
-			local zedquant = tonumber(EventsTable["zedquant"])
-			if isClient() then
-				local Zedx, Zedy, Zedz = SpawnLoc(50)
-				ServerEvent = {["Etype"] = "Zedspawn", ["ZedX"] = Zedx, ["ZedY"] = Zedy, ["ZedQ"] = zedquant, ["PlayerChar"] = playerchar }
-				--playerChar:Say("x:" .. tostring(ServerEvent.ZedX) .. "y: " .. tostring(ServerEvent.ZedY))
-				sendClientCommand("TWEEvents", "Zedspawn", ServerEvent); -- Trigger Event from Client to Server
-			else
-				local Zedx, Zedy, Zedz = SpawnLoc(85)
-				createHordeFromTo(Zedx, Zedy, playerChar:getX(), playerChar:getY(), zedquant)
+			if initiator == playerChar:getUsername() then
+				--local Zedx, Zedy, wz = LSpawnLoc();
+				local zedquant = tonumber(EventsTable["zedquant"])
+				if isClient() then
+					local Zedx, Zedy, Zedz = SpawnLoc(50)
+					ServerEvent = {["Etype"] = "Zedspawn", ["ZedX"] = Zedx, ["ZedY"] = Zedy, ["ZedQ"] = zedquant, ["PlayerChar"] = playerchar }
+					--playerChar:Say("x:" .. tostring(ServerEvent.ZedX) .. "y: " .. tostring(ServerEvent.ZedY))
+					sendClientCommand("TWEEvents", "Zedspawn", ServerEvent); -- Trigger Event from Client to Server
+				else
+					local Zedx, Zedy, Zedz = SpawnLoc(85)
+					createHordeFromTo(Zedx, Zedy, playerChar:getX(), playerChar:getY(), zedquant)
+				end
 			end
 		end
 
@@ -64,19 +71,22 @@ function performEvent(EventsTable, initiator)
 			TWE_Events.GiftItems(tonumber(EventsTable["gifts"]))
 		end
 
-		if tonumber(EventsTable["helicopter"]) > 0 and initiator == playerChar:getUsername() then
+		if tonumber(EventsTable["helicopter"]) > 0 then
 
 			if tonumber(EventsTable["helicopter"]) == 1 then
 				print("------------=Twitch Events: Air Event=------------")
 				if TWEAnnouceEvents == true then
 					playerChar:Say(EventsTable["Viewer"] .. getText("UI_AirEventMilitary"))
 				end
-				if isClient() then
-					ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "military" }
-					sendClientCommand("TWEEvents", "AirEvent", ServerEvent); -- Trigger Event from Client to Server
-				else
-					local heli = getFreeHelicopter("military")
-					heli:launch(playerChar, false)
+
+				if initiator == playerChar:getUsername() then
+					if isClient() then
+						ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "military" }
+						sendClientCommand("TWEEvents", "AirEvent", ServerEvent); -- Trigger Event from Client to Server
+					else
+						local heli = getFreeHelicopter("military")
+						heli:launch(playerChar, false)
+					end
 				end
 			end
 
@@ -87,12 +97,15 @@ function performEvent(EventsTable, initiator)
 				if TWEAnnouceEvents == true then
 					playerChar:Say(EventsTable["Viewer"] .. getText("UI_AirEventNews"))
 				end
-				if isClient() then
-					ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "news_chopper" }
-					sendClientCommand("TWEEvents", "AirEvent", ServerEvent); -- Trigger Event from Client to Server
-				else
-					local heli = getFreeHelicopter("military")
-					heli:launch(playerChar, false)
+
+				if initiator == playerChar:getUsername() then
+					if isClient() then
+						ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "news_chopper" }
+						sendClientCommand("TWEEvents", "AirEvent", ServerEvent); -- Trigger Event from Client to Server
+					else
+						local heli = getFreeHelicopter("military")
+						heli:launch(playerChar, false)
+					end
 				end
 			end
 
@@ -102,12 +115,15 @@ function performEvent(EventsTable, initiator)
 				if TWEAnnouceEvents == true then
 					playerChar:Say(EventsTable["Viewer"] .. getText("UI_AirEventPolice"))
 				end
-				if isClient() then
-					ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "police" }
-					sendClientCommand("TWEEvents", "AirEvent", ServerEvent); -- Trigger Event from Client to Server
-				else
-					local heli = getFreeHelicopter("police")
-					heli:launch(playerChar, false)
+
+				if initiator == playerChar:getUsername() then
+					if isClient() then
+						ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "police" }
+						sendClientCommand("TWEEvents", "AirEvent", ServerEvent); -- Trigger Event from Client to Server
+					else
+						local heli = getFreeHelicopter("police")
+						heli:launch(playerChar, false)
+					end
 				end
 			end
 
@@ -117,12 +133,15 @@ function performEvent(EventsTable, initiator)
 				if TWEAnnouceEvents == true then
 					playerChar:Say(EventsTable["Viewer"] .. getText("UI_AirEventRaiders"))
 				end
-				if isClient() then
-					ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "raiders" }
-					sendClientCommand("TWEEvents", "AirEvent", ServerEvent); -- Trigger Event from Client to Server
-				else
-					local heli = getFreeHelicopter("raiders")
-					heli:launch(playerChar, false)
+				
+				if initiator == playerChar:getUsername() then
+					if isClient() then
+						ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "raiders" }
+						sendClientCommand("TWEEvents", "AirEvent", ServerEvent); -- Trigger Event from Client to Server
+					else
+						local heli = getFreeHelicopter("raiders")
+						heli:launch(playerChar, false)
+					end
 				end
 			end
 
@@ -132,12 +151,15 @@ function performEvent(EventsTable, initiator)
 				if TWEAnnouceEvents == true then
 					playerChar:Say(EventsTable["Viewer"] .. getText("UI_AirEventFema"))
 				end
-				if isClient() then
-					ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "FEMA_drop" }
-					sendClientCommand("TWEEvents", "AirEvent", ServerEvent); -- Trigger Event from Client to Server
-				else
-					local heli = getFreeHelicopter("FEMA_drop")
-					heli:launch(playerChar, false)
+
+				if initiator == playerChar:getUsername() then
+					if isClient() then
+						ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "FEMA_drop" }
+						sendClientCommand("TWEEvents", "AirEvent", ServerEvent); -- Trigger Event from Client to Server
+					else
+						local heli = getFreeHelicopter("FEMA_drop")
+						heli:launch(playerChar, false)
+					end
 				end
 			end
 
@@ -147,12 +169,15 @@ function performEvent(EventsTable, initiator)
 				if TWEAnnouceEvents == true then
 					playerChar:Say(EventsTable["Viewer"] .. getText("UI_AirEventJet"))
 				end
-				if isClient() then
-					ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "jet" }
-					sendClientCommand("TWEEvents", "AirEvent", ServerEvent); -- Trigger Event from Client to Server
-				else
-					local heli = getFreeHelicopter("jet")
-					heli:launch(playerChar, false)
+
+				if initiator == playerChar:getUsername() then
+					if isClient() then
+						ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "jet" }
+						sendClientCommand("TWEEvents", "AirEvent", ServerEvent); -- Trigger Event from Client to Server
+					else
+						local heli = getFreeHelicopter("jet")
+						heli:launch(playerChar, false)
+					end
 				end
 			end
 
@@ -162,12 +187,15 @@ function performEvent(EventsTable, initiator)
 				if TWEAnnouceEvents == true then
 					playerChar:Say(EventsTable["Viewer"] .. getText("UI_AirEventRandom"))
 				end
-				if isClient() then
-					ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "RANDOM" }
-					sendClientCommand("TWEEvents", "AirEvent", ServerEvent); -- Trigger Event from Client to Server
-				else
-					local heli = getFreeHelicopter("RANDOM")
-					heli:launch(playerChar, false)
+
+				if initiator == playerChar:getUsername() then
+					if isClient() then
+						ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = "RANDOM" }
+						sendClientCommand("TWEEvents", "AirEvent", ServerEvent); -- Trigger Event from Client to Server
+					else
+						local heli = getFreeHelicopter("RANDOM")
+						heli:launch(playerChar, false)
+					end
 				end
 			end
 
@@ -176,12 +204,15 @@ function performEvent(EventsTable, initiator)
 				if TWEAnnouceEvents == true then
 					playerChar:Say(EventsTable["Viewer"] .. " called a ".. EventsTable["title"])
 				end
-				if isClient() then
-					ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = EventsTable["title"] }
-					sendClientCommand("TWEEvents", "AirEvent", ServerEvent); -- Trigger Event from Client to Server
-				else
-					local heli = getFreeHelicopter(EventsTable["title"])
-					heli:launch(playerChar, false)
+
+				if initiator == playerChar:getUsername() then
+					if isClient() then
+						ServerEvent = {["Etype"] = "AirEvent", ["target"] = playerchar, ["Event"] = EventsTable["title"] }
+						sendClientCommand("TWEEvents", "AirEvent", ServerEvent); -- Trigger Event from Client to Server
+					else
+						local heli = getFreeHelicopter(EventsTable["title"])
+						heli:launch(playerChar, false)
+					end
 				end
 			end
 			
