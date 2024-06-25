@@ -215,7 +215,7 @@ function performEvent(EventsTable, initiator)
 				end
 			end
 
-			if tonumber(EventsTable["helicopter"]) == 8 then
+			if tonumber(EventsTable["helicopter"]) == 9 then
 				print("------------=Twitch Events: Air Event=------------")
 				if TWEAnnouceEvents == true then
 					playerChar:Say(EventsTable["Viewer"] .. getText("UI_AirEventSamaritan"))
