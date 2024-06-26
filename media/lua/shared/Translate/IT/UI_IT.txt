@@ -10,6 +10,7 @@ UI_EN = {
     UI_mufflerBonus = " ripara il silenziatore ",
     UI_gasBonus = " mette della benzina ",
     UI_ZombieSpawn = " manda ",
+    UI_ZombiePacks = " gruppi di ",
     UI_HelpMEEvent = " ti manda ",
     UI_HelpMEETroll = ", veramente?!",
     UI_AirEventMilitary = " chiama un Elicottero Militare",

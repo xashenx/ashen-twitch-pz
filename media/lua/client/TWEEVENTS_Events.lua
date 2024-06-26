@@ -44,8 +44,10 @@ function performEvent(EventsTable, initiator)
 		if EventsTable["zombies"] == true and EventsTable["zedquant"] > 0 then
 			print("------------=Twitch Events: zombies=------------")
 			if TWEAnnouceEvents == true then
-				if initiator == playerChar:getUsername() then
-					playerChar:Say(EventsTable["Viewer"] .. getText("UI_ZombieSpawn") .. EventsTable["zedquant"] .. " zombies")
+				if EventsTable["zedpacks"] > 1 then
+					local message = EventsTable["Viewer"] .. getText("UI_ZombieSpawn") .. EventsTable["zedpacks"] .. getText("UI_ZombiePacks")
+					message = message .. EventsTable["zedquant"] .. " zombies (" .. EventsTable["zedquant"] * EventsTable["zedpacks"] .. ")" 
+					playerChar:Say(message)
 				else
 					playerChar:Say(EventsTable["Viewer"] .. getText("UI_ZombieSpawn") .. EventsTable["zedquant"] .. " zombies")
 				end
@@ -55,10 +57,18 @@ function performEvent(EventsTable, initiator)
 				--local Zedx, Zedy, wz = LSpawnLoc();
 				local zedquant = tonumber(EventsTable["zedquant"])
 				if isClient() then
-					local Zedx, Zedy, Zedz = SpawnLoc(50)
-					ServerEvent = {["Etype"] = "Zedspawn", ["ZedX"] = Zedx, ["ZedY"] = Zedy, ["ZedQ"] = zedquant, ["PlayerChar"] = playerchar }
-					--playerChar:Say("x:" .. tostring(ServerEvent.ZedX) .. "y: " .. tostring(ServerEvent.ZedY))
-					sendClientCommand("TWEEvents", "Zedspawn", ServerEvent); -- Trigger Event from Client to Server
+					for i=1, EventsTable["zedpacks"] do
+						local Zedx, Zedy, Zedz = SpawnLoc(50)
+						ServerEvent = {["Etype"] = "Zedspawn", ["ZedX"] = Zedx, ["ZedY"] = Zedy, ["ZedQ"] = zedquant, ["PlayerChar"] = playerchar }
+						--playerChar:Say("x:" .. tostring(ServerEvent.ZedX) .. "y: " .. tostring(ServerEvent.ZedY))
+						print("spawning pack of " .. zedquant .. " zeds at " .. Zedx .. " " .. Zedy .. " " .. Zedz .. " zedpack #" .. i)
+						sendClientCommand("TWEEvents", "Zedspawn", ServerEvent); -- Trigger Event from Client to Server
+					end
+
+					-- local Zedx, Zedy, Zedz = SpawnLoc(50)
+					-- ServerEvent = {["Etype"] = "Zedspawn", ["ZedX"] = Zedx, ["ZedY"] = Zedy, ["ZedQ"] = zedquant, ["PlayerChar"] = playerchar }
+					-- --playerChar:Say("x:" .. tostring(ServerEvent.ZedX) .. "y: " .. tostring(ServerEvent.ZedY))
+					-- sendClientCommand("TWEEvents", "Zedspawn", ServerEvent); -- Trigger Event from Client to Server
 				else
 					local Zedx, Zedy, Zedz = SpawnLoc(85)
 					createHordeFromTo(Zedx, Zedy, playerChar:getX(), playerChar:getY(), zedquant)
