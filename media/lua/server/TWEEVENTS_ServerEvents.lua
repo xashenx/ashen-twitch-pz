@@ -47,11 +47,11 @@ Commands.TWEEvents.Handshake = function(source, args)
 			end
 		end
 		-- print("--TWEEVENT- Handshake REQUEST -- " .. tostring(allowed) .. " for " .. args.initiator)
-		args.initiatorID = sourceId
 		
 		if allowed then
+			args.initiatorID = sourceId
 			-- insert args.EventsTable in EventList
-			AshenTwitchEvents.server.EventList[args.initiator] = args.EventsTable
+			-- AshenTwitchEvents.server.EventList[args.initiator] = args.EventsTable
 			-- send back a handshake
 			args.state = "Accepted"
 			sendServerCommand("AshenTwitchEvents", "Handshake", args)
