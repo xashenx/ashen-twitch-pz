@@ -11,12 +11,12 @@ require "ExpandedHelicopter02a_Presets"
 require "ExpandedHelicopter09_EasyConfigOptions"
 
 local Commands = {};
-Commands.TWEEvents = {};
-Commands.TWEEvents.Dfrag = function(source, args)
+Commands.AshenTwitch = {}
+Commands.AshenTwitch.Dfrag = function(source, args)
 print("Triggered Dfrag command on server")
 end
 
-Commands.TWEEvents.Zedspawn = function(source, args)
+Commands.AshenTwitch.Zedspawn = function(source, args)
     local sourceId = source:getOnlineID();
     local ZedQ = tonumber(args.ZedQ);
 	print("Zedspawn [".. sourceId .."] quant: ", ZedQ)
@@ -26,7 +26,7 @@ Commands.TWEEvents.Zedspawn = function(source, args)
 end
 
 
-Commands.TWEEvents.AirEvent = function(source, args)
+Commands.AshenTwitch.AirEvent = function(source, args)
     local sourceId = source:getOnlineID();
 --	onAirCommand("twitch-events","scheduleEvent",sourceID,args.Event)
 	print("--TWEEVENT- AirEvent Triggered--" .. args.Event)
@@ -35,7 +35,7 @@ Commands.TWEEvents.AirEvent = function(source, args)
 end
 
 
-Commands.TWEEvents.Handshake = function(source, args)
+Commands.AshenTwitch.Handshake = function(source, args)
     local sourceId = source:getOnlineID();
 
 	if args.state == "Request" then
@@ -54,7 +54,8 @@ Commands.TWEEvents.Handshake = function(source, args)
 			-- AshenTwitchEvents.server.EventList[args.initiator] = args.EventsTable
 			-- send back a handshake
 			args.state = "Accepted"
-			sendServerCommand("AshenTwitchEvents", "Handshake", args)
+			args.sandbox = AshenTwitchEvents.sandboxSettings
+			sendServerCommand("AshenTwitch", "Handshake", args)
 		end
 	-- elseif args.state == "Join" then
 	-- 	print("--TWEEVENT- Handshake JOIN -- " .. source:getUsername())
@@ -66,6 +67,12 @@ Commands.TWEEvents.Handshake = function(source, args)
 	-- 	end
 	end
 end
+
+
+Commands.AshenTwitch.ForwardMessage = function(source, args)
+	sendServerCommand("AshenTwitch", "ForwardMessage", args)
+end
+
 
 -- function fetchSandboxVars()
 AshenTwitchEvents.server.fetchSandboxVars = function()
@@ -109,7 +116,7 @@ end
 
 local onClientCommand = function(module, command, source, args) -- Events Constructor.
     if Commands[module] and Commands[module][command] then
-	    Commands[module][command](source, args);
+	    Commands[module][command](source, args)
     end
 end
 
