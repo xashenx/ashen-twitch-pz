@@ -295,8 +295,11 @@ function performEvent(EventsTable, initiator)
 			TWE_Events.TWECars(EventsTable["Viewer"], "Engine", part_modifier)
 		end
 
-		if tonumber(EventsTable["trait"]) > 0 then -- traits begin
-			print("------------=Twitch Events: trait Event=------------")
+		if tonumber(EventsTable["trait"]) == 99 then -- random trait
+			print("------------=Twitch Events: random trait Event=------------")
+			TWETableTraitsTrigger(ZombRand(1,12))
+		elseif tonumber(EventsTable["trait"]) > 0 then -- specifi trait
+			print("------------=Twitch Events: specific trait Event=------------")
 			TWETableTraitsTrigger(tonumber(EventsTable["trait"]))
 		end
 	end
@@ -304,51 +307,61 @@ end
 
 --temporary traits trigger---
 function TWETableTraitsTrigger(MyTrait)
-		local playerChar = getPlayer()
-		local calendar = PZCalendar.getInstance()
-		local hour = calendar:get(Calendar.HOUR_OF_DAY)
-		local minute = calendar:get(Calendar.MINUTE)
-		local second = calendar:get(Calendar.SECOND)
-		if hour == 0 then --check if its 0, if true replaces 0 with 24
+	local playerChar = getPlayer()
+	local calendar = PZCalendar.getInstance()
+	local hour = calendar:get(Calendar.HOUR_OF_DAY)
+	local minute = calendar:get(Calendar.MINUTE)
+	local second = calendar:get(Calendar.SECOND)
+	if hour == 0 then --check if its 0, if true replaces 0 with 24
 		TraitEndTime = (24 * 60 + minute + timervalue ) * 60 + second
-		else TraitEndTime = (hour * 60 + minute + timervalue) * 60 + second
-		end	
-		if not playerChar:HasTrait(TWETraitsTable[MyTrait]) then
-        playerChar:getTraits():add(TWETraitsTable[MyTrait]);
-		table.insert(TWETempTraitsTable, {trait = TWETraitsTable[MyTrait], endtime = TraitEndTime})
-		HaloTextHelper.addTextWithArrow(playerChar, getText("UI_trait_"..TWETraitsTable[MyTrait]), true, HaloTextHelper.getColorGreen())
-        Events.EveryOneMinute.Remove(TWE_TraitCheck);
-        Events.EveryOneMinute.Add(TWE_TraitCheck);
-    end
+	else 
+		TraitEndTime = (hour * 60 + minute + timervalue) * 60 + second
+	end	
+	
+	selectedTrait = AshenTwitchEvents.TWETraitsTable[MyTrait]
+	-- if not playerChar:HasTrait(TWETraitsTable[MyTrait]) then
+		-- playerChar:getTraits():add(TWETraitsTable[MyTrait]);
+		-- table.insert(TWETempTraitsTable, {trait = TWETraitsTable[MyTrait], endtime = TraitEndTime})
+		-- HaloTextHelper.addTextWithArrow(playerChar, getText("UI_trait_"..TWETraitsTable[MyTrait]), true, HaloTextHelper.getColorGreen())
+	if not playerChar:HasTrait(selectedTrait) then
+		playerChar:getTraits():add(selectedTrait);
+		table.insert(TWETempTraitsTable, {trait = selectedTrait, endtime = TraitEndTime})
+		HaloTextHelper.addTextWithArrow(playerChar, getText("UI_trait_" .. selectedTrait), true, HaloTextHelper.getColorGreen())
+		Events.EveryOneMinute.Remove(TWE_TraitCheck);
+		Events.EveryOneMinute.Add(TWE_TraitCheck);
+	end
 end
+
 --temporary traits timer check---
 function TWE_TraitCheck()
-		local playerChar = getPlayer()
-		local calendar = PZCalendar.getInstance()
-		local hour = calendar:get(Calendar.HOUR_OF_DAY)
-		local minute = calendar:get(Calendar.MINUTE)
-		local second = calendar:get(Calendar.SECOND)
-		if hour == 0 then --check if its 0, if true replaces 0 with 24
+	local playerChar = getPlayer()
+	local calendar = PZCalendar.getInstance()
+	local hour = calendar:get(Calendar.HOUR_OF_DAY)
+	local minute = calendar:get(Calendar.MINUTE)
+	local second = calendar:get(Calendar.SECOND)
+	if hour == 0 then --check if its 0, if true replaces 0 with 24
 		currentTime = (24 * 60 + minute) * 60 + second
-		else currentTime = (hour * 60 + minute) * 60 + second
-		end	
-        for i, v in ipairs(TWETempTraitsTable) do
-        local trait = v.trait
-        local endtime = v.endtime
-        if endtime <= currentTime then
+	else 
+		currentTime = (hour * 60 + minute) * 60 + second
+	end
+
+	for i, v in ipairs(TWETempTraitsTable) do
+		local trait = v.trait
+		local endtime = v.endtime
+		if endtime <= currentTime then
 			print("Removing trait: " .. trait)
 			print("Endtime: " .. endtime)
 			playerChar:getTraits():remove(trait);
-            HaloTextHelper.addTextWithArrow(playerChar, getText("UI_trait_"..trait), false, HaloTextHelper.getColorRed())     
-            table.remove(TWETempTraitsTable, i)
-            if TWETempTraitsTable == 0 then
-                Events.EveryOneMinute.Remove(TWE_TraitCheck)
-                break
-            end
-        end
+			HaloTextHelper.addTextWithArrow(playerChar, getText("UI_trait_"..trait), false, HaloTextHelper.getColorRed())     
+			table.remove(TWETempTraitsTable, i)
+			if TWETempTraitsTable == 0 then
+				Events.EveryOneMinute.Remove(TWE_TraitCheck)
+				break
+			end
 		end
-
+	end
 end
+
 --car event actions
 function TWE_Events.TWECars(Viewer, Mypart, modifier)
     local playerChar = getPlayer()
