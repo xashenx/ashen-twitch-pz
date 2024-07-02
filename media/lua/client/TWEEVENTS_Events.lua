@@ -416,11 +416,11 @@ function TWE_Events.GiftItems(whatkind)
 	if whatkind == 1 then
 		Helpmeitem = ZombRand(1,14)
 		inv:AddItem(HelpTheStreamer[Helpmeitem])
-		player:Say(getText("UI_HelpMEEvent") .. getItemNameFromFullType(HelpTheStreamer[Helpmeitem]) .. " " .. ViewerName)
+		player:Say(ViewerName .. " ".. getText("UI_HelpMEEvent") .. getItemNameFromFullType(HelpTheStreamer[Helpmeitem]))
 	elseif whatkind == 2 then
 		Trollmeitem = ZombRand(1,5)
 		inv:AddItem(TrollTheStreamer[Trollmeitem])
-		player:Say(getText("UI_HelpMEEvent") .. getItemNameFromFullType(TrollTheStreamer[Trollmeitem]).. " " .. ViewerName .. getText("UI_HelpMEETroll"))
+		player:Say(ViewerName .. " " .. getText("UI_HelpMEEvent") .. getItemNameFromFullType(TrollTheStreamer[Trollmeitem]) .. getText("UI_HelpMEETroll"))
 	elseif whatkind == 3 then
 		Trollmeitem = ZombRand(1,5)
 		inv:AddItem(TrollTheStreamer[Trollmeitem])
@@ -461,8 +461,7 @@ function handshake(module, command, args)
 	-- print('------------=Twitch Events: Handshake=------------', args.initiator, args.state)
 	if args.state == "Accepted" then
 		-- print("--TWEEVENT- Handshake ACCEPTED -- " .. args.initiator)
-		-- performe the event
-		print()
+		-- perform the event
 		if AshenTwitchEvents.Options.acceptEvents or playerChar:getUsername() == args.initiator then
 			-- print("accepting events", AshenTwitchEvents.Options.acceptEvents)
 			-- print("player is initiator", playerChar:getUsername() == args.initiator)
