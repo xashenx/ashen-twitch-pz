@@ -100,8 +100,6 @@ function performEvent(EventsTable, initiator)
 				end
 			end
 
-
-
 			if tonumber(EventsTable["helicopter"]) == 2 then
 				print("------------=Twitch Events: Air Event=------------")
 				if TWEAnnouceEvents == true then
@@ -118,7 +116,6 @@ function performEvent(EventsTable, initiator)
 					end
 				end
 			end
-
 
 			if tonumber(EventsTable["helicopter"]) == 3 then
 				print("------------=Twitch Events: Air Event=------------")
@@ -137,7 +134,6 @@ function performEvent(EventsTable, initiator)
 				end
 			end
 
-
 			if tonumber(EventsTable["helicopter"]) == 4 then
 				print("------------=Twitch Events: Air Event=------------")
 				if TWEAnnouceEvents == true then
@@ -155,7 +151,6 @@ function performEvent(EventsTable, initiator)
 				end
 			end
 
-
 			if tonumber(EventsTable["helicopter"]) == 5 then
 				print("------------=Twitch Events: Air Event=------------")
 				if TWEAnnouceEvents == true then
@@ -172,7 +167,6 @@ function performEvent(EventsTable, initiator)
 					end
 				end
 			end
-
 
 			if tonumber(EventsTable["helicopter"]) == 6 then
 				print("------------=Twitch Events: Air Event=------------")
@@ -297,7 +291,13 @@ function performEvent(EventsTable, initiator)
 
 		if tonumber(EventsTable["trait"]) == 99 then -- random trait
 			print("------------=Twitch Events: random trait Event=------------")
-			TWETableTraitsTrigger(ZombRand(1,12))
+			-- get the size of AshenTwitchEvents.TWETraitsTable
+			-- get a random number between 1 and the size of AshenTwitchEvents.TWETraitsTable
+			local length
+			for k, v in pairs(AshenTwitchEvents.TWETraitsTable) do
+				length = length + 1
+			end
+			TWETableTraitsTrigger(ZombRand(1,length))
 		elseif tonumber(EventsTable["trait"]) > 0 then -- specifi trait
 			print("------------=Twitch Events: specific trait Event=------------")
 			TWETableTraitsTrigger(tonumber(EventsTable["trait"]))
@@ -428,20 +428,26 @@ function TWE_Events.GiftItems(whatkind)
 	local Trollmeitem = 0
 	if whatkind == 1 then
 		Helpmeitem = ZombRand(1,14)
-		inv:AddItem(HelpTheStreamer[Helpmeitem])
+		-- inv:AddItem(HelpTheStreamer[Helpmeitem])
+		inv:AddItem(AshenTwitchEvents.HelpTheStreamer[Helpmeitem])
 		player:Say(ViewerName .. " ".. getText("UI_HelpMEEvent") .. getItemNameFromFullType(HelpTheStreamer[Helpmeitem]))
 	elseif whatkind == 2 then
 		Trollmeitem = ZombRand(1,5)
-		inv:AddItem(TrollTheStreamer[Trollmeitem])
+		-- inv:AddItem(TrollTheStreamer[Trollmeitem])
+		inv:AddItem(AshenTwitchEvents.TrollTheStreamer[Trollmeitem])
 		player:Say(ViewerName .. " " .. getText("UI_HelpMEEvent") .. getItemNameFromFullType(TrollTheStreamer[Trollmeitem]) .. getText("UI_HelpMEETroll"))
 	elseif whatkind == 3 then
 		Trollmeitem = ZombRand(1,5)
-		inv:AddItem(TrollTheStreamer[Trollmeitem])
 		Helpmeitem = ZombRand(1,14)
-		inv:AddItem(HelpTheStreamer[Helpmeitem])
-		Ggift = HelpTheStreamer[Helpmeitem]
-		Bgift = TrollTheStreamer[Trollmeitem]
-		player:Say("So a " .. getItemNameFromFullType(HelpTheStreamer[Helpmeitem]) .. " with a " .. getItemNameFromFullType(TrollTheStreamer[Trollmeitem]) .. "! You have strange tastes " .. ViewerName .."!")
+		-- inv:AddItem(TrollTheStreamer[Trollmeitem])
+		-- inv:AddItem(HelpTheStreamer[Helpmeitem])
+		-- Ggift = HelpTheStreamer[Helpmeitem]
+		-- Bgift = TrollTheStreamer[Trollmeitem]
+		Ggift = AshenTwitchEvents.HelpTheStreamer[Helpmeitem]
+		Bgift = AshenTwitchEvents.TrollTheStreamer[Trollmeitem]
+		inv:AddItem(Ggift)
+		inv:AddItem(Bgift)
+		player:Say("So a " .. getItemNameFromFullType(Ggift) .. " with a " .. getItemNameFromFullType(Bgift) .. "! You have strange tastes " .. ViewerName .."!")
 	elseif whatkind == 4 then
 		inv:AddItem(LocalEventsTable["title"])
 		end
