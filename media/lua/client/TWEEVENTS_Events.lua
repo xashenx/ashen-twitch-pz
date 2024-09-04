@@ -44,6 +44,7 @@ end
 
 function performEvent(EventsTable, initiator)
 	local playerChar = getPlayer()
+	local username = playerChar:getUsername()
 	if EventsTable then
 		ViewerName = EventsTable["Viewer"]
 		if EventsTable["zombies"] == true and EventsTable["zedquant"] > 0 then
@@ -54,11 +55,21 @@ function performEvent(EventsTable, initiator)
 					message = message .. EventsTable["zedquant"] .. " zombies (" .. EventsTable["zedquant"] * EventsTable["zedpacks"] .. ")" 
 					playerChar:Say(message)
 				else
-					playerChar:Say(EventsTable["Viewer"] .. getText("UI_ZombieSpawn") .. EventsTable["zedquant"] .. " zombies")
+					local message = EventsTable["Viewer"] .. getText("UI_ZombieSpawn") .. EventsTable["zedquant"] .. " zombies"
+					playerChar:Say(message)
+				end
+
+				if initiator ~= username then
+					args = {}
+					args.message = username .. EventsTable["UI_ZombieAttacts"] .. EventsTable["zedquant"] * EventsTable["zedpacks"] .. " zombies"
+					args.initiator = initiator
+					sendClientCommand("AshenTwitch", "ForwardMessage", args)
 				end
 			end
 
-			if initiator == playerChar:getUsername() then
+			-- OLD way spawn only on initiator
+			-- if initiator == playerChar:getUsername() then
+			if AshenTwitchEvents.Options.acceptEvents or playerChar:getUsername() == args.initiator then
 				--local Zedx, Zedy, wz = LSpawnLoc();
 				local zedquant = tonumber(EventsTable["zedquant"])
 				if isClient() then

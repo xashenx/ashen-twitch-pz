@@ -11,6 +11,7 @@ UI_EN = {
     UI_gasBonus = " put on some gas",
     UI_ZombieSpawn = " sent ",
     UI_ZombiePacks = " packs of  ",
+    UI_ZombieAttacts = " attracts ",
     UI_HelpMEEvent = " sent me a ",
     UI_HelpMEETroll = ", really?!",
     UI_AirEventMilitary = " called a Military Heli",

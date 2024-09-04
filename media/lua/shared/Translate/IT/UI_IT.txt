@@ -1,5 +1,5 @@
 UI_EN = {
-    UI_Options_acceptEvents = "Acceta gli Eventi",
+    UI_Options_acceptEvents = "Accetta gli Eventi",
     UI_Options_acceptEvents_tooltip = "Gli eventi dalla chat di Twitch verranno accettati",
     UI_engineMalus = " manomette il motore ",
     UI_batteryMalus = " manomette la batteria ",
@@ -11,6 +11,7 @@ UI_EN = {
     UI_gasBonus = " mette della benzina ",
     UI_ZombieSpawn = " manda ",
     UI_ZombiePacks = " gruppi di ",
+    UI_ZombieAttacts = " richiama ",
     UI_HelpMEEvent = " ti manda ",
     UI_HelpMEETroll = ", veramente?!",
     UI_AirEventMilitary = " chiama un Elicottero Militare",
