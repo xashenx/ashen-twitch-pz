@@ -318,6 +318,8 @@ function TWETableTraitsTrigger(MyTrait, initiator)
 	local hour = calendar:get(Calendar.HOUR_OF_DAY)
 	local minute = calendar:get(Calendar.MINUTE)
 	local second = calendar:get(Calendar.SECOND)
+	-- perk = Perks["Strength"]
+	-- print(playerChar:getPerkLevel(perk))
 	if hour == 0 then --check if its 0, if true replaces 0 with 24
 		TraitEndTime = (24 * 60 + minute + timervalue ) * 60 + second
 	else 
@@ -331,13 +333,14 @@ function TWETableTraitsTrigger(MyTrait, initiator)
 		-- HaloTextHelper.addTextWithArrow(playerChar, getText("UI_trait_"..TWETraitsTable[MyTrait]), true, HaloTextHelper.getColorGreen())
 
 	local traitDescr = getText("UI_trait_" .. selectedTrait)
-	if selectedTrait == "Deaf" then
-		traitDescr = getText("UI_trait_" .. selectedTrait)
-	else
-		if traitDescr == "UI_trait_ThinSkinned" then
+	if selectedTrait == "UI_trait_" .. selectedTrait then
+		if selectedTrait == "Thinskinned" then
+			traitDescr = getText("UI_trait_ThinSkinned")
+		else
 			traitDescr = getText("UI_trait_" .. string.lower(selectedTrait))
 		end
 	end
+
 	if not playerChar:HasTrait(selectedTrait) then
 		playerChar:getTraits():add(selectedTrait)
 		table.insert(TWETempTraitsTable, {trait = selectedTrait, endtime = TraitEndTime})
