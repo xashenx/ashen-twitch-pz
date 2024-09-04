@@ -61,7 +61,7 @@ function performEvent(EventsTable, initiator)
 
 				if initiator ~= username then
 					args = {}
-					args.message = username .. EventsTable["UI_ZombieAttacts"] .. EventsTable["zedquant"] * EventsTable["zedpacks"] .. " zombies"
+					args.message = username .. getText("UI_ZombieAttacts") .. EventsTable["zedquant"] * EventsTable["zedpacks"] .. " zombies"
 					args.initiator = initiator
 					sendClientCommand("AshenTwitch", "ForwardMessage", args)
 				end
