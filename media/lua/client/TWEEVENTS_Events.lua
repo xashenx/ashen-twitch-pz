@@ -318,6 +318,24 @@ function performEvent(EventsTable, initiator)
 			print("------------=Twitch Events: specific trait Event=------------")
 			TWETableTraitsTrigger(tonumber(EventsTable["trait"]), initiator)
 		end
+
+		-- zombie modifier
+		if tonumber(EventsTable["zombie_modifier"]) > 0 then
+			print("------------=Twitch Events: zombie modifier Event=------------")
+			TWE_Events.ZombieModifier(tonumber(EventsTable["zombie_modifier"]), initiator)
+		end
+
+		-- player modifier
+		if tonumber(EventsTable["player_modifier"]) > 0 then
+			print("------------=Twitch Events: player modifier Event=------------")
+			TWE_Events.PlayerModifier(tonumber(EventsTable["player_modifier"]), initiator)
+		end
+
+		-- jumpscare
+		if tonumber(EventsTable["jumpscare"]) > 0 then
+			print("------------=Twitch Events: jumpscare Event=------------")
+			TWE_Events.Jumpscare()
+		end
 	end
 end
 
@@ -542,6 +560,130 @@ function TWE_Events.GiftItems(whatkind, initiator)
 	elseif whatkind == 4 then
 		inv:AddItem(LocalEventsTable["title"])
 		end
+end
+
+--zombie modifier event actions
+function TWE_Events.ZombieModifier(whatkind, initiator)
+    local player = getPlayer()
+    local zombieList = player:getCell():getZombieList()
+    local zombie
+    local amount = zombieList:size()
+    if amount == 0 then return false end
+
+	if whatkind == 1 then
+		-- weaken zombies
+		for i=0, zombieList:size()-1 do
+			zombie = zombieList:get(i)
+			zombie:setHealth(0.01)
+		end
+	
+		player:playSoundLocal("zombiehit2")
+		player:Say(ViewerName .. " indebolisce " .. amount .. " zombie!")
+	elseif whatkind == 2 then
+		-- teleport zombies around the player
+		local x, y, z, tile
+		local cell = player:getCell()
+		for i=0, zombieList:size()-1 do
+			zombie = zombieList:get(i)
+			tile = cell:getRandomOutdoorTile()
+			x = tile:getX()
+			y = tile:getY()
+			z = tile:getZ()
+			zombie:setX(x)
+			zombie:setY(y)
+			zombie:setZ(z)
+		end
+
+		player:playSoundLocal("zombiehit1")
+		player:Say(ViewerName .. " teletrasporta gli zombie intorno!")
+	elseif whatkind == 3 then
+		-- fast zombies
+		zombieList = player:getCell():getZombieList()
+		for i=0, zombieList:size()-1 do
+			zombie = zombieList:get(i)
+			zombie:setCanWalk(true)
+			zombie:setCrawler(false)
+			local oldSpeed = getSandboxOptions():getOptionByName("ZombieLore.Speed")
+			oldSpeed = oldSpeed:getValue()
+			print(oldSpeed)
+			getSandboxOptions():set("ZombieLore.Speed", 4)
+			zombie:makeInactive(true)
+			zombie:makeInactive(false)
+			zombie:DoZombieStats()
+			getSandboxOptions():set("ZombieLore.Speed",oldSpeed)
+		end
+	
+		player:playSoundLocal("zombiehit4")
+		player:Say(ViewerName .. " rende " .. amount .. " zombie CORRIDORI!")
+	elseif whatkind == 4 then
+		-- slow zombies
+		zombieList = player:getCell():getZombieList()
+		for i=0, zombieList:size()-1 do
+			zombie = zombieList:get(i)
+			zombie:setCanWalk(true)
+			zombie:setCrawler(false)
+			local oldSpeed = getSandboxOptions():getOptionByName("ZombieLore.Speed")
+			oldSpeed = oldSpeed:getValue()
+			print(oldSpeed)
+			getSandboxOptions():set("ZombieLore.Speed", 0.1)
+			zombie:makeInactive(true)
+			zombie:makeInactive(false)
+			zombie:DoZombieStats()
+			getSandboxOptions():set("ZombieLore.Speed",oldSpeed)
+		end
+	
+		player:playSoundLocal("zombiehit4")
+		player:Say(ViewerName .. " rende " .. amount .. " zombie LENTI!")
+	end
+end
+
+function TWE_Events.Jumpscare()
+    local player = getPlayer()
+    local x = player:getX()
+    local y = player:getY()
+    local z = player:getZ()
+    local square = player:getSquare()
+
+    getSoundManager():PlayWorldSound("ZombieSurprisedPlayer", square, 0, 5, 5, false);
+    addSound(player, x, y, z, 150, 50);
+
+    local messages = { "Oh no!", "Perdincibaccolina!", "Grande Giove!" }
+    local choice = messages[ZombRand(1, 3)]
+    player:setCanShout(true)
+    player:SayShout(choice)
+    player:Say(ViewerName .. " zombie ti colga!")
+end
+
+--player modifier event actions
+function TWE_Events.PlayerModifier(whatkind, initiator)
+	local player = getPlayer()
+	local stats = player:getStats()
+
+	if whatkind == 1 then
+		local drunk_level = stats:getDrunkenness()
+		if drunk_level > 70 then return false end
+		stats:setDrunkenness(70)
+		player:Say(ViewerName .. " ci offre da bere!")
+	elseif whatkind == 2 then
+		local hunger_level = stats:getHunger()
+		if hunger_level == 0.5 then return false end
+		stats:setHunger(0.5)
+		player:Say(ViewerName .. " pensa che dovremmo mangiare!")
+	elseif whatkind == 3 then
+		local cell = player:getCell()
+		local tile = cell:getRandomOutdoorTile()
+		local x = tile:getX()
+		local y = tile:getY()
+		local z = tile:getZ()
+	
+		player:setPosition(x, y, z)
+		player:Say(ViewerName .. " mi ha teletrasportato!")
+	end
+end
+
+--environment modifier event actions
+function TWE_Events.EnvironmentModifier(whatkind, initiator)
+	return
 end
 
 --spawn x,y,z randomizer needs improvement
