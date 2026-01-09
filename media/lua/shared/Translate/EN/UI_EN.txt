@@ -1,6 +1,8 @@
 UI_EN = {
     UI_Options_acceptEvents = "Accept Events",
     UI_Options_acceptEvents_tooltip = "Events from the Twitch chat will be accepted",
+    UI_Options_playSounds = "Play Sounds",
+    UI_Options_playSounds_tooltip = "Play sounds when events are accepted",
     UI_engineMalus = " sabotaged the engine",
     UI_batteryMalus = " sabotaged the battery",
     UI_mufflerMalus = " sabotaged the muffler",

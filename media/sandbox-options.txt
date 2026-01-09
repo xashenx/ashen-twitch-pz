@@ -40,3 +40,37 @@ option AshenTwitchEvents.TWETraitsTable
 	page = AshenTwitchEvents, 
 	translation = AshenTwitchEvents_TWETraitsTable,
 }
+
+option AshenTwitchEvents.roll20Gift
+{
+	type = string,
+	default = Base.HandAxe,
+	page = AshenTwitchEvents,
+	translation = AshenTwitchEvents_roll20Gift,
+}
+
+option AshenTwitchEvents.enableAI
+{
+	type = boolean, 
+	default = false,
+	page = AshenTwitchEvents,
+	translation = AshenTwitchEvents_enableAI,
+}
+
+option AshenTwitchEvents.hordeZedQnt
+{
+	type = integer, 
+	min = 1,
+	max = 50,
+	default = 7,
+	page = AshenTwitchEvents,
+	translation = AshenTwitchEvents_hordeZedQnt,
+}
+
+option AshenTwitchEvents.forwardEvents
+{
+	type = boolean, 
+	default = false,
+	page = AshenTwitchEvents,
+	translation = AshenTwitchEvents_forwardEvents,
+}

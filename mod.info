@@ -1,4 +1,6 @@
-name=AshenTwitch
-id=AshenTwitch
-description=This mod redeems twitch rewards
+id=AshenTwitchTesting
+name=AshenTwitchTesting
+description=Blabla
+modversion=2.11.0
+author=Ashen
 poster=poster.png

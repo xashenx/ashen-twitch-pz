@@ -3,5 +3,9 @@ Sandbox_IT = {
 	AshenTwitchEvents_HelpTheStreamer = "Help Streamer Items",
 	AshenTwitchEvents_TrollTheStreamer = "Troll Streamer Items",
 	AshenTwitchEvents_TWE_Airevents = "Air Events",
-	AshenTwitchEvents_TWETraitsTable = "Traits",
+	AshenTwitchEvents_TWETraitsTable = "Tratti",
+	AshenTwitchEvents_roll20Gift = "Regalo per roll 20",
+	AshenTwitchEvents_enableAI = "Abilita AI",
+	AshenTwitchEvents_hordeZedQnt = "Zombies per pack nelle orde",
+	AshenTwitchEvents_forwardEvents = "Inoltra eventi a tutti i client",
 }
