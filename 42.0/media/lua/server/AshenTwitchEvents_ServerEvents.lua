@@ -14,6 +14,8 @@ Commands.AshenTwitch.Dfrag = function(source, args)
 print("Triggered Dfrag command on server")
 end
 
+SERVER_SWITCH_STATE = false
+
 -- Server Command Handle for Zed Spawn Event from Client
 -- The server will spawn the requested number of zombies at the specified location
 Commands.AshenTwitch.Zedspawn = function(source, args)
@@ -283,6 +285,24 @@ AshenTwitchEvents.server.fetchSandboxVars = function()
 	end
 end
 
+-- set server switch state from client request
+Commands.AshenTwitch.ToggleServerSwitch = function(source, args)
+	if args.action == "on" then
+		SERVER_SWITCH_STATE = false
+	elseif args.action == "off" then
+		SERVER_SWITCH_STATE = true
+	end
+	print("AshenTwitchEvents Server Switch State changed to -> " .. tostring(SERVER_SWITCH_STATE) .. " by " .. source:getUsername())
+	-- broadcast new state to all clients
+	sendServerCommand("AshenTwitch", "serverSwitchState", { serverSwitchState = SERVER_SWITCH_STATE })
+end
+
+-- return SERVER_SWITCH_STATE to the requesting client
+local function syncVariableToClient(playerObj)
+	print("AshenTwitchEvents Server sending switch state -> " .. tostring(SERVER_SWITCH_STATE) .. " to " .. playerObj:getUsername())
+	sendServerCommand(playerObj, "AshenTwitch", "serverSwitchState", { serverSwitchState = SERVER_SWITCH_STATE })
+end
+
 local function initServer()
     AshenTwitchEvents.server.fetchSandboxVars()
 end
@@ -295,5 +315,6 @@ local onClientCommand = function(module, command, source, args) -- Events Constr
     end
 end
 
+Events.OnPlayerConnected.Add(syncVariableToClient)
 Events.OnServerStarted.Add(initServer)
 Events.OnClientCommand.Add(onClientCommand); -- Listening Events from Client side.
