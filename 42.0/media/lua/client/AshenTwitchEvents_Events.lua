@@ -138,12 +138,14 @@ AshenTwitchEvents.client.performAAIevent = function(event)
 		end
 		playerChar:Say(message)
 		-- audio selection
-		if event.horde then
-			playerChar:playSound("Allarme")
-		elseif event.runner then
-			playerChar:playSound("Maiale")
-		else
-			playerChar:playSound("Winter")
+		if AshenTwitchEvents.Options.SoundsEnabled then
+			if event.horde then
+				playerChar:playSound("Allarme")
+			elseif event.runner then
+				playerChar:playSound("Maiale")
+			else
+				playerChar:playSound("Winter")
+			end
 		end
 
 		if isClient() then
@@ -173,7 +175,9 @@ AshenTwitchEvents.client.performAAIevent = function(event)
 		end
 	elseif event.type == "gift" then
 		ViewerName = "ZombieMaster Ashen"
-		event.player:playSound("Drum")
+		if AshenTwitchEvents.Options.SoundsEnabled then
+			event.player:playSound("Drum")
+		end
 		AshenTwitchEvents.client.GiftEvent(event)
 	end
 end
@@ -228,7 +232,9 @@ AshenTwitchEvents.client.performEvent = function(EventsTable, initiator)
 			event.points = 8
 			local message = EventsTable["Viewer"] .. ' crea un muro di fuoco attorno a te!'
 			playerChar:Say(message)
-			playerChar:playSound("Tatataaa")
+			if AshenTwitchEvents.Options.SoundsEnabled then
+				playerChar:playSound("Tatataaa")
+			end
 			if isClient() then
 				sendClientCommand("AshenTwitch", "RingofFire", event)
 			else
@@ -278,14 +284,20 @@ AshenTwitchEvents.client.performEvent = function(EventsTable, initiator)
 					end
 					-- audio selection
 					if EventsTable["timedZombies"] then
-						playerChar:playSound("Benny")
+						if AshenTwitchEvents.Options.SoundsEnabled then
+							playerChar:playSound("Benny")
+						end
 						local calendar = PZCalendar.getInstance()
 						temporaryZombiesEnd = calendar:getTimeInMillis() + 19000
 						Events.EveryOneMinute.Add(AshenTwitchEvents.client.ZombieModifierEnd)
 					elseif EventsTable["runner"] then
-						playerChar:playSound("Maiale")
+						if AshenTwitchEvents.Options.SoundsEnabled then
+							playerChar:playSound("Maiale")
+						end
 					else
-						playerChar:playSound("Winter")
+						if AshenTwitchEvents.Options.SoundsEnabled then
+							playerChar:playSound("Winter")
+						end
 					end
 				else
 					local message = EventsTable["Viewer"] .. getText("UI_ZombieSpawn") .. EventsTable["zedquant"] .. " zombies"
@@ -303,14 +315,20 @@ AshenTwitchEvents.client.performEvent = function(EventsTable, initiator)
 					end
 					-- audio selection
 					if EventsTable["timedZombies"] then
-						playerChar:playSound("Benny")
+						if AshenTwitchEvents.Options.SoundsEnabled then
+							playerChar:playSound("Benny")
+						end
 						local calendar = PZCalendar.getInstance()
 						temporaryZombiesEnd = calendar:getTimeInMillis() + 17000
 						Events.EveryOneMinute.Add(AshenTwitchEvents.client.ZombieModifierEnd)
 					elseif EventsTable["runner"] then
-						playerChar:playSound("Maiale")
+						if AshenTwitchEvents.Options.SoundsEnabled then
+							playerChar:playSound("Maiale")
+						end
 					else
-						playerChar:playSound("Winter")
+						if AshenTwitchEvents.Options.SoundsEnabled then
+							playerChar:playSound("Winter")
+						end
 					end
 				end
 
@@ -395,7 +413,9 @@ AshenTwitchEvents.client.performEvent = function(EventsTable, initiator)
 
 		if tonumber(EventsTable["gifts"]) > 0 then
 			-- print("------------=Twitch Events: gift =------------")
-			playerChar:playSound("Drum")
+			if AshenTwitchEvents.Options.SoundsEnabled then
+				playerChar:playSound("Drum")
+			end
 			event = {}
 			event.player = playerChar
 			event.initiator = initiator
@@ -659,7 +679,9 @@ AshenTwitchEvents.client.performEvent = function(EventsTable, initiator)
 		if tonumber(EventsTable["zombie_modifier"]) > 0 then
 			if playerChar:getUsername() == initiator or tonumber(EventsTable["zombie_modifier"]) ~= 2 then
 				print("------------=Twitch Events: zombie modifier Event=------------")
-				playerChar:playSound("Evil")
+				if AshenTwitchEvents.Options.SoundsEnabled then
+					playerChar:playSound("Evil")
+				end
 				AshenTwitchEvents.client.ZombieModifier(tonumber(EventsTable["zombie_modifier"]), initiator)
 			elseif tonumber(EventsTable["zombie_modifier"]) == 2 then
 				if initiator ~= username then
@@ -676,7 +698,9 @@ AshenTwitchEvents.client.performEvent = function(EventsTable, initiator)
 			event.whatkind = tonumber(EventsTable["player_modifier"])
 			event.initiator = initiator
 			event.message = EventsTable["message"]
-			playerChar:playSound("Thank")
+			if AshenTwitchEvents.Options.SoundsEnabled then
+				playerChar:playSound("Thank")
+			end
 			AshenTwitchEvents.client.PlayerModifier(event)
 			if playerRemote then
 				event.player = playerRemote
@@ -721,10 +745,14 @@ AshenTwitchEvents.client.reviveZombies = function(event)
     end
 	local message = ''
 	if revivedCount == 0 then
-		player:playSound("Mario")
+		if AshenTwitchEvents.Options.SoundsEnabled then
+			player:playSound("Mario")
+		end
 		message = 'Mi spiace ' .. event.Viewer .. ' non ci sono corpi a terra! [' .. event.range .. ' tiles]'
 	else
-		player:playSound("Leeroy")
+		if AshenTwitchEvents.Options.SoundsEnabled then
+			player:playSound("Leeroy")
+		end
 		message = event.Viewer .. ' ne resuscita ' .. revivedCount .. '! [' .. event.range .. ' tiles]'
 	end
 	player:Say(message)
@@ -841,7 +869,9 @@ AshenTwitchEvents.client.TableTraitsTrigger = function(event)
 	local traitDescr = getText("UI_trait_" .. formatTraitName(selectedTrait))
 	
 	if not playerChar:hasTrait(CharacterTrait[selectedTrait]) then
-		playerChar:playSound("Virus")
+		if AshenTwitchEvents.Options.SoundsEnabled then
+			playerChar:playSound("Virus")
+		end
 		if not isClient() then
 			playerChar:getCharacterTraits():add(CharacterTrait[selectedTrait])
 		else
@@ -862,7 +892,9 @@ AshenTwitchEvents.client.TableTraitsTrigger = function(event)
 		Events.EveryOneMinute.Remove(AshenTwitchEvents.client.TraitCheck)
 		Events.EveryOneMinute.Add(AshenTwitchEvents.client.TraitCheck)
 	else
-		playerChar:playSound("Mario")
+		if AshenTwitchEvents.Options.SoundsEnabled then
+			playerChar:playSound("Mario")
+		end
 		playerChar:Say('Mi spiace ' .. event.viewer .. ', ' .. traitDescr .. ' presente!')
 	end
 end
@@ -1172,7 +1204,9 @@ AshenTwitchEvents.client.performRolledEvent = function(reward)
 			local item = AshenTwitchEvents.roll20Gift
 			inv:AddItem(item)
 			playerZero:Say(message .. "ricevi un " .. getItemNameFromFullType(item))
-			playerZero:playSound("Thank")
+			if AshenTwitchEvents.Options.SoundsEnabled then
+				playerZero:playSound("Thank")
+			end
 		end
 	elseif roll == 20 then -- 20
 		if reward.type == 'good' then
@@ -1180,7 +1214,9 @@ AshenTwitchEvents.client.performRolledEvent = function(reward)
 			local item = AshenTwitchEvents.roll20Gift
 			inv:AddItem(item)
 			playerZero:Say(message .. "ricevi un " .. getItemNameFromFullType(item))
-			playerZero:playSound("Thank")
+			if AshenTwitchEvents.Options.SoundsEnabled then
+				playerZero:playSound("Thank")
+			end
 		else
 			playerZero:Say(message .. "EVENTO GRANDE ORDA")
 			event.from = reward.Viewer
@@ -1194,7 +1230,9 @@ AshenTwitchEvents.client.performRolledEvent = function(reward)
 		end
 	elseif roll <= 6 then
 		playerZero:Say(message .. "nessun effetto")
-		playerZero:playSound("Mario")
+			if AshenTwitchEvents.Options.SoundsEnabled then
+				playerZero:playSound("Mario")
+			end
 	-- elseif roll % 2 == 1 then -- numeri dispari -> spawn zombie
 	elseif reward.type == 'evil' then
 		-- get integer of the roll divided by 6
@@ -1306,8 +1344,9 @@ AshenTwitchEvents.client.ZombieModifier = function(whatkind, initiator)
 			zombie = zombieList:get(i)
 			zombie:setHealth(0.01)
 		end
-	
-		player:playSoundLocal("zombiehit2")
+		if AshenTwitchEvents.Options.SoundsEnabled then
+			player:playSoundLocal("zombiehit2")
+		end
 		player:Say(ViewerName .. " indebolisce " .. amount .. " zombie!")
 	elseif whatkind == 2 then
 		-- teleport zombies around the player
@@ -1323,8 +1362,9 @@ AshenTwitchEvents.client.ZombieModifier = function(whatkind, initiator)
 			zombie:setY(y)
 			zombie:setZ(z)
 		end
-
-		player:playSoundLocal("zombiehit1")
+		if AshenTwitchEvents.Options.SoundsEnabled then
+			player:playSoundLocal("zombiehit1")
+		end
 		player:Say(ViewerName .. " teletrasporta gli zombie!")
 	elseif whatkind == 3 then
 		-- fast zombies
@@ -1342,7 +1382,9 @@ AshenTwitchEvents.client.ZombieModifier = function(whatkind, initiator)
 			getSandboxOptions():set("ZombieLore.Speed",oldSpeed)
 		end
 	
-		player:playSoundLocal("zombiehit4")
+		if AshenTwitchEvents.Options.SoundsEnabled then
+			player:playSoundLocal("zombiehit4")
+		end
 		player:Say(ViewerName .. " rende " .. amount .. " zombie CORRIDORI!")
 	elseif whatkind == 4 then
 		-- slow zombies
@@ -1360,7 +1402,9 @@ AshenTwitchEvents.client.ZombieModifier = function(whatkind, initiator)
 			getSandboxOptions():set("ZombieLore.Speed",oldSpeed)
 		end
 		
-		player:playSoundLocal("zombiehit4")
+		if AshenTwitchEvents.Options.SoundsEnabled then
+			player:playSoundLocal("zombiehit4")
+		end
 		player:Say(ViewerName .. " rende " .. amount .. " zombie LENTI!")
 	end
 end
@@ -1601,9 +1645,13 @@ ServerCommands.AshenTwitch.ReviveResult = function(args)
 		return
 	end
 	if args.revivedCount > 0 then
-		playerChar:playSound("Leeroy")
+		if AshenTwitchEvents.Options.SoundsEnabled then
+			playerChar:playSound("Leeroy")
+		end
 	else
-		playerChar:playSound("Mario")
+		if AshenTwitchEvents.Options.SoundsEnabled then
+			playerChar:playSound("Mario")
+		end
 	end
 	playerChar:Say(args.message)
 end
