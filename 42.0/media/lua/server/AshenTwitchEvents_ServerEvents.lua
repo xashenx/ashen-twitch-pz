@@ -14,7 +14,7 @@ Commands.AshenTwitch.Dfrag = function(source, args)
 print("Triggered Dfrag command on server")
 end
 
-SERVER_SWITCH_STATE = false
+SERVER_SWITCH_STATE = true
 
 -- Server Command Handle for Zed Spawn Event from Client
 -- The server will spawn the requested number of zombies at the specified location
@@ -90,20 +90,29 @@ Commands.AshenTwitch.Handshake = function(source, args)
 	if args.state == "Request" then
 		-- check if user is allowed to use commands
 		local allowed = false
-		for i=1,#AshenTwitchEvents.sandboxSettings.allowedUsers do
-			if AshenTwitchEvents.sandboxSettings.allowedUsers[i] == args.initiator then
-				allowed = true
+		if not SERVER_SWITCH_STATE then
+			-- server switch is off, no one is allowed
+			allowed = false
+		else
+			for i=1,#AshenTwitchEvents.sandboxSettings.allowedUsers do
+				if AshenTwitchEvents.sandboxSettings.allowedUsers[i] == args.initiator then
+					allowed = true
+				end
 			end
 		end
 		-- print("--TWEEVENT- Handshake REQUEST -- " .. tostring(allowed) .. " for " .. args.initiator)
 		
+		args.sandbox = AshenTwitchEvents.sandboxSettings
 		if allowed then
 			args.initiatorID = sourceId
 			-- insert args.EventsTable in EventList
 			-- AshenTwitchEvents.server.EventList[args.initiator] = args.EventsTable
 			-- send back a handshake
 			args.state = "Accepted"
-			args.sandbox = AshenTwitchEvents.sandboxSettings
+			sendServerCommand(source, "AshenTwitch", "Handshake", args)
+		else
+			-- send back a handshake denial
+			args.state = "Denied"
 			sendServerCommand(source, "AshenTwitch", "Handshake", args)
 		end
 	-- elseif args.state == "Join" then
@@ -288,19 +297,19 @@ end
 -- set server switch state from client request
 Commands.AshenTwitch.ToggleServerSwitch = function(source, args)
 	if args.action == "on" then
-		SERVER_SWITCH_STATE = false
-	elseif args.action == "off" then
 		SERVER_SWITCH_STATE = true
+	elseif args.action == "off" then
+		SERVER_SWITCH_STATE = false
 	end
-	print("AshenTwitchEvents Server Switch State changed to -> " .. tostring(SERVER_SWITCH_STATE) .. " by " .. source:getUsername())
+	-- print("AshenTwitchEvents Server Switch State changed to -> " .. tostring(SERVER_SWITCH_STATE) .. " by " .. source:getUsername())
 	-- broadcast new state to all clients
 	sendServerCommand("AshenTwitch", "serverSwitchState", { serverSwitchState = SERVER_SWITCH_STATE })
 end
 
 -- return SERVER_SWITCH_STATE to the requesting client
-local function syncVariableToClient(playerObj)
-	print("AshenTwitchEvents Server sending switch state -> " .. tostring(SERVER_SWITCH_STATE) .. " to " .. playerObj:getUsername())
-	sendServerCommand(playerObj, "AshenTwitch", "serverSwitchState", { serverSwitchState = SERVER_SWITCH_STATE })
+Commands.AshenTwitch.RequestServerSwitchState = function(source, args)
+	-- print("AshenTwitchEvents Server sending switch state -> " .. tostring(SERVER_SWITCH_STATE) .. " to " .. source:getUsername())
+	sendServerCommand(source, "AshenTwitch", "serverSwitchState", { serverSwitchState = SERVER_SWITCH_STATE })
 end
 
 local function initServer()
@@ -315,6 +324,5 @@ local onClientCommand = function(module, command, source, args) -- Events Constr
     end
 end
 
-Events.OnPlayerConnected.Add(syncVariableToClient)
 Events.OnServerStarted.Add(initServer)
 Events.OnClientCommand.Add(onClientCommand); -- Listening Events from Client side.
