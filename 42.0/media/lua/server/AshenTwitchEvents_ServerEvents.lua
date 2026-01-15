@@ -90,9 +90,12 @@ Commands.AshenTwitch.Handshake = function(source, args)
 	if args.state == "Request" then
 		-- check if user is allowed to use commands
 		local allowed = false
+		args.sandbox = AshenTwitchEvents.sandboxSettings
 		if not SERVER_SWITCH_STATE then
 			-- server switch is off, no one is allowed
-			allowed = false
+			args.state = "ServerDisabled"
+			sendServerCommand(source, "AshenTwitch", "Handshake", args)
+			return
 		else
 			for i=1,#AshenTwitchEvents.sandboxSettings.allowedUsers do
 				if AshenTwitchEvents.sandboxSettings.allowedUsers[i] == args.initiator then
@@ -102,7 +105,6 @@ Commands.AshenTwitch.Handshake = function(source, args)
 		end
 		-- print("--TWEEVENT- Handshake REQUEST -- " .. tostring(allowed) .. " for " .. args.initiator)
 		
-		args.sandbox = AshenTwitchEvents.sandboxSettings
 		if allowed then
 			args.initiatorID = sourceId
 			-- insert args.EventsTable in EventList

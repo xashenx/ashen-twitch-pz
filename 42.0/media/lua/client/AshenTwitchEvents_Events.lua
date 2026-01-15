@@ -42,6 +42,9 @@ AshenTwitchEvents.client.performHandshake = function(EventsTable)
     local playerChar = getPlayer()
 	if not AshenTwitchEvents.LOCAL_SWITCH_STATE then
 		print("Twitch Events disabled locally, ignoring handshake.")
+		local ResultFile = getFileWriter("aresult.txt", false, false)
+		ResultFile:write("LocallyDisabled")
+		ResultFile:close()
 		return
 	end
 	ServerEvent = {["Etype"] = "Handshake", ["ZedX"] = Zedx, ["ZedY"] = Zedy, ["ZedQ"] = zedquant, ["target"] = playerchar, ["EventsTable"] = EventsTable}
@@ -1556,7 +1559,7 @@ ServerCommands.AshenTwitch.Handshake = function(args)
 		AshenTwitchEvents.TWE_Airevents = args.sandbox.TWE_Airevents
 		AshenTwitchEvents.TWETraitsTable = args.sandbox.TWETraitsTable
 	end
-
+	
 	playerChar = getPlayer()
 	-- print('------------=Twitch Events: Handshake=------------', args.initiator, args.state)
 	if args.state == "Accepted" then
@@ -1567,18 +1570,21 @@ ServerCommands.AshenTwitch.Handshake = function(args)
 			-- print("player is initiator", playerChar:getUsername() == args.initiator)
 			AshenTwitchEvents.client.performEvent(args.EventsTable, args.initiator)
 		end
-
+		
+		
 		-- if playerChar:getUsername() == args.initiator then
 		-- 	print("mio eventooo")
 		-- end
 		-- args.state = "Join"
 		-- sendClientCommand("AshenTwitch", "Handshake", args); -- Trigger Event from Client to Server
-	-- elseif result.state == "Execute" then
-	-- 	print("--AshenTwitch- Handshake ACCEPTED -- " .. args.initiator)
+		-- elseif result.state == "Execute" then
+		-- 	print("--AshenTwitch- Handshake ACCEPTED -- " .. args.initiator)
 	else
 		print("-- AshenTwitch Handshake DENIED -- ")
-		return
 	end
+	local ResultFile = getFileWriter("aresult.txt", false, false)
+	ResultFile:write(args.state)
+	ResultFile:close()
 end
 
 
