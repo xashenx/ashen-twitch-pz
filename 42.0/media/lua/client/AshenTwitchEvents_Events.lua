@@ -677,12 +677,17 @@ AshenTwitchEvents.client.performEvent = function(EventsTable, initiator)
 
 		-- zombie modifier
 		if tonumber(EventsTable["zombie_modifier"]) > 0 then
+			local event = {}
+			event.range = EventsTable["range"] or 10
+			event.type = tonumber(EventsTable["zombie_modifier"])
+			event.initiator = initiator
+			event.health = EventsTable["health"] or 0.01
 			if playerChar:getUsername() == initiator or tonumber(EventsTable["zombie_modifier"]) ~= 2 then
 				print("------------=Twitch Events: zombie modifier Event=------------")
 				if AshenTwitchEvents.Options.SoundsEnabled then
 					playerChar:playSound("Evil")
 				end
-				AshenTwitchEvents.client.ZombieModifier(tonumber(EventsTable["zombie_modifier"]), initiator)
+				AshenTwitchEvents.client.ZombieModifier(event)
 			elseif tonumber(EventsTable["zombie_modifier"]) == 2 then
 				if initiator ~= username then
 					playerChar:Say(EventsTable["Viewer"] .. " teletrasporta gli zombie!")
@@ -1322,7 +1327,12 @@ AshenTwitchEvents.client.performRolledEvent = function(reward)
 				message = message .. "RESISTENZA"
 			elseif effect == 5 then
 				-- weaken zombie to 1hp
-				AshenTwitchEvents.client.ZombieModifier(1, playerZero:getUsername())
+				event = {}
+				event.range = 10
+				event.type = 1
+				event.initiator = playerZero:getUsername()
+				event.health = 0.01
+				AshenTwitchEvents.client.ZombieModifier(event)
 				message = message .. "ZOMBIE1HP"
 			end
 		end
@@ -1331,81 +1341,108 @@ AshenTwitchEvents.client.performRolledEvent = function(reward)
 end
 
 --zombie modifier event actions
-AshenTwitchEvents.client.ZombieModifier = function(whatkind, initiator)
+AshenTwitchEvents.client.ZombieModifier = function(event)
     local player = getPlayer()
     local zombieList = player:getCell():getZombieList()
     local zombie
     local amount = zombieList:size()
     if amount == 0 then return false end
 
-	if whatkind == 1 then
+	if event.type == 1 then
 		-- weaken zombies
+		-- ask server to weaken zombies
+		sendClientCommand("AshenTwitch", "ZombieModifier", event)
+		-- weaken zombies around the player on client side
+		local counter = 0
 		for i=0, zombieList:size()-1 do
-			zombie = zombieList:get(i)
-			zombie:setHealth(0.01)
+			local zombie = zombieList:get(i)
+			if GetZombieDistance(zombie, player) <= event.range and not zombie:isRemoteZombie() then
+				zombie = zombieList:get(i)
+				zombie:setHealth(event.health * zombie:getHealth())
+				-- set max health too
+				-- zombie:setMaxHealth(event.health * zombie:getMaxHealth())
+				print("Modified zombie health at (" .. zombie:getX() .. ", " .. zombie:getY() .. ", " .. zombie:getZ() .. ") to " .. event.health * zombie:getHealth() .. " HP")
+				counter = counter + 1
+			end
 		end
 		if AshenTwitchEvents.Options.SoundsEnabled then
 			player:playSoundLocal("zombiehit2")
 		end
-		player:Say(ViewerName .. " indebolisce " .. amount .. " zombie!")
-	elseif whatkind == 2 then
+		player:Say(ViewerName .. " modifica " .. counter .. " zombie!")
+	elseif event.type == 2 then
 		-- teleport zombies around the player
+		-- ask server to teleport zombies
+		sendClientCommand("AshenTwitch", "ZombieModifier", event)
 		local x, y, z, tile
 		local cell = player:getCell()
 		for i=0, zombieList:size()-1 do
 			zombie = zombieList:get(i)
-			tile = cell:getRandomOutdoorTile()
-			x = tile:getX()
-			y = tile:getY()
-			z = tile:getZ()
-			zombie:setX(x)
-			zombie:setY(y)
-			zombie:setZ(z)
+			if GetZombieDistance(zombie, player) <= event.range and not zombie:isRemoteZombie() then
+				tile = cell:getRandomOutdoorTile()
+				x = tile:getX()
+				y = tile:getY()
+				z = tile:getZ()
+				zombie:setX(x)
+				zombie:setY(y)
+				zombie:setZ(z)
+			end
 		end
 		if AshenTwitchEvents.Options.SoundsEnabled then
 			player:playSoundLocal("zombiehit1")
 		end
 		player:Say(ViewerName .. " teletrasporta gli zombie!")
-	elseif whatkind == 3 then
+	elseif event.type == 3 then
 		-- fast zombies
+		-- ask server to speed up zombies
+		sendClientCommand("AshenTwitch", "ZombieModifier", event)
 		zombieList = player:getCell():getZombieList()
+		local count = 0
 		for i=0, zombieList:size()-1 do
 			zombie = zombieList:get(i)
-			zombie:setCanWalk(true)
-			zombie:setCrawler(false)
-			local oldSpeed = getSandboxOptions():getOptionByName("ZombieLore.Speed")
-			oldSpeed = oldSpeed:getValue()
-			getSandboxOptions():set("ZombieLore.Speed", 4)
-			zombie:makeInactive(true)
-			zombie:makeInactive(false)
-			zombie:DoZombieStats()
-			getSandboxOptions():set("ZombieLore.Speed",oldSpeed)
+			if GetZombieDistance(zombie, player) <= event.range and not zombie:isRemoteZombie() then
+				zombie:setCanWalk(true)
+				zombie:setCrawler(false)
+				local oldSpeed = getSandboxOptions():getOptionByName("ZombieLore.Speed")
+				oldSpeed = oldSpeed:getValue()
+				getSandboxOptions():set("ZombieLore.Speed", 4)
+				zombie:makeInactive(true)
+				zombie:makeInactive(false)
+				zombie:DoZombieStats()
+				getSandboxOptions():set("ZombieLore.Speed",oldSpeed)
+				count = count + 1
+			end
 		end
 	
 		if AshenTwitchEvents.Options.SoundsEnabled then
 			player:playSoundLocal("zombiehit4")
 		end
-		player:Say(ViewerName .. " rende " .. amount .. " zombie CORRIDORI!")
-	elseif whatkind == 4 then
+		player:Say(ViewerName .. " rende " .. count .. " zombie CORRIDORI!")
+	elseif event.type == 4 then
 		-- slow zombies
+		-- ask server to slow down zombies
+		sendClientCommand("AshenTwitch", "ZombieModifier", args)
 		zombieList = player:getCell():getZombieList()
+		local count = 0
 		for i=0, zombieList:size()-1 do
 			zombie = zombieList:get(i)
-			zombie:setCanWalk(true)
-			zombie:setCrawler(false)
-			local oldSpeed = getSandboxOptions():getOptionByName("ZombieLore.Speed")
-			oldSpeed = oldSpeed:getValue()
-			getSandboxOptions():set("ZombieLore.Speed", 0.1)
-			zombie:makeInactive(true)
-			zombie:makeInactive(false)
-			zombie:DoZombieStats()
-			getSandboxOptions():set("ZombieLore.Speed",oldSpeed)
+			if GetZombieDistance(zombie, player) <= event.range and not zombie:isRemoteZombie() then
+				zombie:setCanWalk(true)
+				zombie:setCrawler(false)
+				local oldSpeed = getSandboxOptions():getOptionByName("ZombieLore.Speed")
+				oldSpeed = oldSpeed:getValue()
+				getSandboxOptions():set("ZombieLore.Speed", 0.1)
+				zombie:makeInactive(true)
+				zombie:makeInactive(false)
+				zombie:DoZombieStats()
+				getSandboxOptions():set("ZombieLore.Speed",oldSpeed)
+				count = count + 1
+			end
 		end
 		
 		if AshenTwitchEvents.Options.SoundsEnabled then
 			player:playSoundLocal("zombiehit4")
 		end
-		player:Say(ViewerName .. " rende " .. amount .. " zombie LENTI!")
+		player:Say(ViewerName .. " rende " .. count .. " zombie LENTI!")
 	end
 end
 

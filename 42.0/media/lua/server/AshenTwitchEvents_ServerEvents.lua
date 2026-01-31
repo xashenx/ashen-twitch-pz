@@ -314,6 +314,67 @@ Commands.AshenTwitch.RequestServerSwitchState = function(source, args)
 	sendServerCommand(source, "AshenTwitch", "serverSwitchState", { serverSwitchState = SERVER_SWITCH_STATE })
 end
 
+Commands.AshenTwitch.ZombieModifier = function(source, args)
+	local player = source
+	if not player then return end
+
+	local zombieList = player:getCell():getZombieList()
+	local zombie
+	local amount = zombieList:size()
+	if amount == 0 then return false end
+
+	local counter = 0
+
+	if args.type == 1 then
+		-- weaken zombies
+		for i=0, zombieList:size()-1 do
+			if GetZombieDistance(zombieList:get(i), player) <= args.range then
+				counter = counter + 1
+				zombie = zombieList:get(i)
+				print("Original health of zombie: " .. tostring(zombie:getHealth()))
+				print("is remote zombie: " .. tostring(zombie:isRemoteZombie()))
+				zombie:setHealth(args.health * zombie:getHealth())
+				-- set max health too
+				-- zombie:setMaxHealth(args.health * zombie:getMaxHealth())
+				print("Modified zombie health at distance: " .. tostring(GetZombieDistance(zombieList:get(i), player)))
+				print("New health of zombie: " .. tostring(zombie:getHealth()))
+			-- else
+			-- 	print("Zombie out of range: " .. tostring(GetZombieDistance(zombieList:get(i), player)))
+			end
+		end
+		print("Modified " .. tostring(counter) .. " zombies around player " .. player:getUsername())
+	elseif args.type == 2 then
+		-- teleport zombies around the player
+		local x, y, z, tile
+		local cell = player:getCell()
+		for i=0, zombieList:size()-1 do
+			zombie = zombieList:get(i)
+			x = player:getX() + ZombRand(-10,10)
+			y = player:getY() + ZombRand(-10,10)
+			z = player:getZ()
+			tile = cell:getGridSquare(x,y,z)
+			if tile then
+				zombie:setX(x)
+				zombie:setY(y)
+				zombie:setZ(z)
+				zombie:setTarget(player)
+			end
+		end
+	elseif args.type == 3 then
+		-- fast zombies
+		for i=0, zombieList:size()-1 do
+			zombie = zombieList:get(i)
+			zombie:setSpeed(zombie:getSpeed() * 1.5)
+		end
+	elseif args.type == 4 then
+		-- slow zombies
+		for i=0, zombieList:size()-1 do
+			zombie = zombieList:get(i)
+			zombie:setSpeed(zombie:getSpeed() * 0.5)
+		end
+	end
+end
+
 local function initServer()
     AshenTwitchEvents.server.fetchSandboxVars()
 end
