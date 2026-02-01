@@ -1668,7 +1668,6 @@ ServerCommands.AshenTwitch.Handshake = function(args)
 	ResultFile:close()
 end
 
-
 ServerCommands.AshenTwitch.ForwardMessage = function(args)
 	playerChar = getPlayer()
 	if args.initiator == playerChar:getUsername() then
@@ -1709,7 +1708,6 @@ ServerCommands.AshenTwitch.GiftResult = function(args)
 end
 
 AshenTwitchEvents.client.onServerCommand = function(module, command, args) -- Events Constructor.
-	print('Received server command:', module, command)
     if ServerCommands[module] and ServerCommands[module][command] then
 	    ServerCommands[module][command](args)
     end

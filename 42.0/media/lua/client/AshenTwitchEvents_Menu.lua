@@ -5,6 +5,7 @@ AshenTwitchEvents.SERVER_SWITCH_STATE = nil
 AshenTwitchEvents.Options = AshenTwitchEvents.Options or {}
 AshenTwitchEvents.Options.SoundsEnabled = true
 AshenTwitchEvents.Options.AcceptEvents = false
+AshenTwitchEvents.whitelisted = nil
 
 local function sendAction(scope, action)
     -- print("AshenTwitchEvents Menu Action: " .. scope .. " -> " .. action)
@@ -35,22 +36,29 @@ local function doMenu(playerIndex, context, worldobjects, test)
     local player = getSpecificPlayer(playerIndex)
     local isadmin = player:getAccessLevel() == "admin"
 
+    -- first we check the whitelisted status
+    if AshenTwitchEvents.whitelisted == nil then
+        sendClientCommand("AshenTwitch", "RequestWhitelistState", {})
+    end
+
     local mainMenu = ISContextMenu:getNew(context)
     if not mainMenu then return true end
     
-    -- if not isadmin then return true end
+    if not isadmin and not AshenTwitchEvents.whitelisted then return true end
     local atwitch_menu = context:addOption("Ashen Twitch", worldobjects, nil)
     context:addSubMenu(atwitch_menu, mainMenu)
-    if AshenTwitchEvents.Options.SoundsEnabled then
-        mainMenu:addOption("SOUNDS: ON", nil, function() sendAction("sounds", "off") end)
-    else
-        mainMenu:addOption("SOUNDS: OFF", nil, function() sendAction("sounds", "on") end)
-    end
+    if AshenTwitchEvents.whitelisted then
+        if AshenTwitchEvents.Options.SoundsEnabled then
+            mainMenu:addOption("SOUNDS: ON", nil, function() sendAction("sounds", "off") end)
+        else
+            mainMenu:addOption("SOUNDS: OFF", nil, function() sendAction("sounds", "on") end)
+        end
 
-    if AshenTwitchEvents.Options.AcceptEvents then
-        mainMenu:addOption("FORWARDED EVENTS: ON", nil, function() sendAction("acceptevents", "off") end)
-    else
-        mainMenu:addOption("FORWARDED EVENTS: OFF", nil, function() sendAction("acceptevents", "on") end)
+        if AshenTwitchEvents.Options.AcceptEvents then
+            mainMenu:addOption("FORWARDED EVENTS: ON", nil, function() sendAction("acceptevents", "off") end)
+        else
+            mainMenu:addOption("FORWARDED EVENTS: OFF", nil, function() sendAction("acceptevents", "on") end)
+        end
     end
 
     if isadmin then
@@ -61,21 +69,28 @@ local function doMenu(playerIndex, context, worldobjects, test)
         end
     end
 
-    if not AshenTwitchEvents.LOCAL_SWITCH_STATE then
-        mainMenu:addOption("LOCAL SWITCH: DISABLED (Click to Enable)", nil, function() sendAction("local", "on") end)
-    else
-        mainMenu:addOption("LOCAL SWITCH: ENABLED (Click to Disable)", nil, function() sendAction("local", "off") end)
+    if AshenTwitchEvents.whitelisted then
+        if not AshenTwitchEvents.LOCAL_SWITCH_STATE then
+            mainMenu:addOption("LOCAL SWITCH: DISABLED (Click to Enable)", nil, function() sendAction("local", "on") end)
+        else
+            mainMenu:addOption("LOCAL SWITCH: ENABLED (Click to Disable)", nil, function() sendAction("local", "off") end)
+        end
     end
     return true
 end
 
 local onServerResponse = function(module, command, reponseData)
     -- handles the response from the server
-    if module ~= "AshenTwitch" or command ~= "serverSwitchState" then
+     -- drop messages not intended for AshenTwitch
+    if module ~= "AshenTwitch" then
         return
     end
     -- print("AshenTwitchEvents Menu received server switch state -> " .. tostring(reponseData["serverSwitchState"]))
-    AshenTwitchEvents.SERVER_SWITCH_STATE = reponseData["serverSwitchState"]
+    if command == "serverSwitchState" then
+        AshenTwitchEvents.SERVER_SWITCH_STATE = reponseData["serverSwitchState"]
+    elseif command == "whitelistState" then
+        AshenTwitchEvents.whitelisted = reponseData.whitelisted
+    end
 end
 
 local function RequestServerUpdate()

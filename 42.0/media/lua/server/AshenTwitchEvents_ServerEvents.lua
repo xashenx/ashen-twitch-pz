@@ -82,6 +82,15 @@ Commands.AshenTwitch.AirEvent = function(source, args)
 	heli:launch(source,true)
 end
 
+local function isWhitelisted(username)
+	for i=1,#AshenTwitchEvents.sandboxSettings.allowedUsers do
+		if AshenTwitchEvents.sandboxSettings.allowedUsers[i] == username then
+			return true
+		end
+	end
+	return false
+end
+
 -- Server Command Handle for Handshake Event from Client
 -- The server will validate the user and respond with sandbox settings
 Commands.AshenTwitch.Handshake = function(source, args)
@@ -97,11 +106,7 @@ Commands.AshenTwitch.Handshake = function(source, args)
 			sendServerCommand(source, "AshenTwitch", "Handshake", args)
 			return
 		else
-			for i=1,#AshenTwitchEvents.sandboxSettings.allowedUsers do
-				if AshenTwitchEvents.sandboxSettings.allowedUsers[i] == args.initiator then
-					allowed = true
-				end
-			end
+			allowed = isWhitelisted(args.initiator)
 		end
 		-- print("--TWEEVENT- Handshake REQUEST -- " .. tostring(allowed) .. " for " .. args.initiator)
 		
@@ -375,6 +380,11 @@ Commands.AshenTwitch.ZombieModifier = function(source, args)
 	end
 end
 
+Commands.AshenTwitch.RequestWhitelistState = function(source, args)
+	local whitelisted = isWhitelisted(source:getUsername())
+	sendServerCommand(source, "AshenTwitch", "whitelistState", { whitelisted = whitelisted })
+end
+
 local function initServer()
     AshenTwitchEvents.server.fetchSandboxVars()
 end
@@ -382,6 +392,8 @@ end
 -- Client Messages Dispatcher
 -- Receives messages from Client and dispatch to the correct Command Handler
 local onClientCommand = function(module, command, source, args) -- Events Constructor.
+	-- drop messages not intended for AshenTwitch
+	if module ~= "AshenTwitch" then return end
     if Commands[module] and Commands[module][command] then
 	    Commands[module][command](source, args)
     end
