@@ -1,0 +1,11 @@
+Sandbox_EN = {
+	Sandbox_AshenTwitchEvents = "AshenTwitchEvents",
+	Sandbox_AshenTwitchEvents_allowedUsers = "User allowed to use twitch integration",
+	Sandbox_AshenTwitchEvents_HelpTheStreamer = "Help Streamer Items",
+	Sandbox_AshenTwitchEvents_TrollTheStreamer = "Troll Streamer Items",
+	Sandbox_AshenTwitchEvents_TWE_Airevents = "Air Events",
+	Sandbox_AshenTwitchEvents_TWETraitsTable = "Traits",
+	Sandbox_AshenTwitchEvents_roll20Gift = "Roll 20 gift",
+	Sandbox_AshenTwitchEvents_enableAI = "Enable AI",
+	Sandbox_AshenTwitchEvents_hordeZedQnt = "Zombies per horde pack",
+}

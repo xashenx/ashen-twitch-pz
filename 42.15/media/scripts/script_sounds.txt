@@ -1,0 +1,124 @@
+module Base
+{
+	sound Tatataaa
+	{
+		category = Zombie,
+		loop = false,
+		clip
+		{
+			file = media/sound/tatataaa.wav,
+			distanceMax = 100,
+			volume = 0.8,
+		}
+	}
+	sound Drum
+	{
+		category = Zombie,
+		loop = false,
+		clip
+		{
+			file = media/sound/drum.wav,
+			distanceMax = 100,
+			volume = 0.8,
+		}
+	}
+	sound Evil
+	{
+		category = Zombie,
+		loop = false,
+		clip
+		{
+			file = media/sound/evil.wav,
+			distanceMax = 100,
+			volume = 0.8,
+		}
+	}
+	sound Leeroy
+	{
+		category = Zombie,
+		loop = false,
+		clip
+		{
+			file = media/sound/leeroy.wav,
+			distanceMax = 100,
+			volume = 0.3,
+		}
+	}
+	sound Thank
+	{
+		category = Zombie,
+		loop = false,
+		clip
+		{
+			file = media/sound/thankyou.wav,
+			distanceMax = 100,
+			volume = 0.8,
+		}
+	}
+	sound Winter
+	{
+		category = Zombie,
+		loop = false,
+		clip
+		{
+			file = media/sound/winter.wav,
+			distanceMax = 100,
+			volume = 0.8,
+		}
+	}
+	sound Virus
+	{
+		category = Zombie,
+		loop = false,
+		clip
+		{
+			file = media/sound/virus.wav,
+			distanceMax = 100,
+			volume = 0.7,
+		}
+	}
+	sound Maiale
+	{
+		category = Zombie,
+		loop = false,
+		clip
+		{
+			file = media/sound/maiale.wav,
+			distanceMax = 100,
+			volume = 0.6,
+		}
+	}
+	sound Allarme
+	{
+		category = Zombie,
+		loop = false,
+		clip
+		{
+			file = media/sound/allarme.wav,
+			distanceMax = 100,
+			volume = 0.7,
+		}
+	}
+	sound Benny
+	{
+		category = Zombie,
+		loop = false,
+		clip
+		{
+			file = media/sound/benny.wav,
+			distanceMax = 100,
+			volume = 0.5,
+		}
+	}
+	sound Mario
+	{
+		category = Zombie,
+		loop = false,
+		clip
+		{
+			file = media/sound/mario.wav,
+			distanceMax = 100,
+			volume = 0.7,
+		}
+	}
+}
