@@ -23,5 +23,12 @@
     "UI_AirEventJet": " called a jet",
     "UI_AirEventSurvivor": " called a survivor Heli",
     "UI_AirEventSamaritan": " called a Samaritan Drop",
-    "UI_AirEventRandom": " called a random air event"
+    "UI_AirEventRandom": " called a random air event",
+    "UI_AshenTwitchEvents_Options_Title": "Ashen Twitch Events",
+    "UI_AshenTwitchEvents_Options_EnableRedeem": "Enable redeeming rewards",
+    "UI_AshenTwitchEvents_Options_EnableRedeem_Tooltip": "Enable the ability to redeem Twitch rewards as in-game events.",
+    "UI_AshenTwitchEvents_Options_SoundsEnabled": "Enable sounds",
+    "UI_AshenTwitchEvents_Options_SoundsEnabled_Tooltip": "Enable sounds for Twitch events",
+    "UI_AshenTwitchEvents_Options_AcceptEvents": "Accept events",
+    "UI_AshenTwitchEvents_Options_AcceptEvents_Tooltip": "Accept events forwarded from other players"
 }

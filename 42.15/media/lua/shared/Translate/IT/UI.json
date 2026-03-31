@@ -23,5 +23,12 @@
     "UI_AirEventJet": " chiama un Jet",
     "UI_AirEventSurvivor": " chiama un Elicottero di Sopravvissuti",
     "UI_AirEventSamaritan": " chiama un Elicottero dei Samaritani",
-    "UI_AirEventRandom": " chiama un Elicottero a caso"
+    "UI_AirEventRandom": " chiama un Elicottero a caso",
+    "UI_AshenTwitchEvents_Options_Title": "Ashen Twitch Events",
+    "UI_AshenTwitchEvents_Options_EnableRedeem": "Abilita riscatto delle ricompense",
+    "UI_AshenTwitchEvents_Options_EnableRedeem_Tooltip": "Abilita la possibilità di riscattare le ricompense Twitch come eventi in-game.",
+    "UI_AshenTwitchEvents_Options_SoundsEnabled": "Abilita suoni",
+    "UI_AshenTwitchEvents_Options_SoundsEnabled_Tooltip": "Abilita i suoni per gli eventi Twitch",
+    "UI_AshenTwitchEvents_Options_AcceptEvents": "Accetta eventi",
+    "UI_AshenTwitchEvents_Options_AcceptEvents_Tooltip": "Accetta eventi inoltrati da altri player"
 }
