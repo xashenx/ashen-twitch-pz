@@ -45,8 +45,7 @@ local function doMenu(playerIndex, context, worldobjects, test)
     if not mainMenu then return true end
     
     -- if not isadmin and not AshenTwitchEvents.whitelisted then return true end
-    local atwitch_menu = context:addOption("Ashen Twitch", worldobjects, nil)
-    context:addSubMenu(atwitch_menu, mainMenu)
+
     -- if AshenTwitchEvents.whitelisted then
     --     if AshenTwitchEvents.Options.SoundsEnabled then
     --         mainMenu:addOption("SOUNDS: ON", nil, function() sendAction("sounds", "off") end)
@@ -61,6 +60,8 @@ local function doMenu(playerIndex, context, worldobjects, test)
     --     end
     -- end
     if isadmin then
+        local atwitch_menu = context:addOption("Ashen Twitch", worldobjects, nil)
+        context:addSubMenu(atwitch_menu, mainMenu)
         if not AshenTwitchEvents.SERVER_SWITCH_STATE then
             mainMenu:addOption("SERVER SWITCH: DISABLED (Click to Enable)", nil, function() sendAction("server", "on") end)
         else
